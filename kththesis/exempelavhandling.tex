@@ -1,0 +1,94 @@
+\documentclass[swedish]{kththesis}
+
+\usepackage{blindtext} % This is just to get some nonsense text in this template, can be safely removed
+
+\usepackage{csquotes} % Recommended by biblatex
+\usepackage[style=numeric,sorting=none,backend=biber]{biblatex}
+\addbibresource{references.bib} % The file containing our references, in BibTeX format
+
+
+\title{Detta är den svenska titeln}
+\alttitle{This is the English translation of the title}
+\author{Osquar Student}
+\email{osquar@kth.se}
+\supervisor{Lotta Larsson}
+\examiner{Lennart Bladgren}
+\hostcompany{Företaget AB} % Remove this line if the project was not done at a host company
+\programme{Civilingenjör Datateknik}
+\school{Skolan för Elektroteknik och Datavetenskap}
+\date{\today}
+
+% Uncomment the next line to include cover generated at https://intra.kth.se/kth-cover
+% \kthcover{kth-cover.pdf}
+
+
+\begin{document}
+
+% Frontmatter includes the titlepage, abstracts and table-of-contents
+\frontmatter
+
+\titlepage
+
+\begin{abstract}
+  Svensk sammanfattning.
+
+  \blindtext
+\end{abstract}
+
+
+\begin{otherlanguage}{english}
+  \begin{abstract}
+    English abstract.
+
+    \blindtext
+  \end{abstract}
+\end{otherlanguage}
+
+
+\tableofcontents
+
+
+% Mainmatter is where the actual contents of the thesis goes
+\mainmatter
+
+
+\chapter{Introduktion}
+
+Vi använder paketet \emph{biblatex} för litteraturreferenser.  Därför
+anropar vi kommandot \texttt{parencite} för att få referenser inom
+parentes, så här \parencite{heisenberg2015}.  Det är också möjligt
+att använda författarens namn som en del av en mening genom att
+använda \texttt{textcite}, om vi t.ex.\ talar om en studie av
+\textcite{einstein2016}.
+
+\Blindtext
+
+\section{Frågeställning}
+\blindtext
+
+
+\chapter{Bakgrund}
+\blindtext
+
+\chapter{Metodval}
+\blindtext
+
+\chapter{Resultat}
+\blindtext
+
+\chapter{Analys}
+\blindtext
+
+\chapter{Slutsats}
+\blindtext
+
+% Print the bibliography (and make it appear in the table of contents)
+\printbibliography[heading=bibintoc]
+
+\appendix
+
+\chapter{Extra Material som Bilaga}
+
+\tailmatter
+
+\end{document}
