@@ -114,4 +114,7 @@ However, this tool is not suited for automatic data collection as the results ar
 \subsection{Android}
 Multiple Application Renderers can communicate with SurfaceFlinger at the same time.   When an application needs to display something on the screen, it pushes a 'surface' to a BufferQueue shared with SurfaceFlinger. Every once in a while, usually in synchronization with the screen refresh rate, SurfaceFlinger wakes up and look into the BufferQueues.
 
+\subsection{Chrome}
+However, some stages can be skipped depending on the change between two frames.
+
 \end{document}
