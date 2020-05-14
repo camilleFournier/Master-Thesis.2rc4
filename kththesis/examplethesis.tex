@@ -120,9 +120,6 @@ Traditionally, cross-platform development is divided into four different approac
 \end{itemize}
 
 
-%\todo[inline]{I think this is redundant since you are listing them above}
-
-
 \subsection{Emulators}
     It is considered a largely accepted best practice to test an under development before production. This can be done using physical devices or emulators. An emulator is a software that simulates the software and hardware capabilities of a device\cite{emulator_def}. This can be a great way to automate testing among a large range of smartphones. Most of the Android emulators found during this research are targeted are gamers and enhance the hardware capabilities usually found in the simulated physical device. Only a few can be used by developers to test the performance of their applications among different smartphones.
     
@@ -158,25 +155,29 @@ In order to be called a Progressive, a web application has to implement several 
     \item \textbf{Installable:} Save the app on the home screen without going through an app store
     \item \textbf{Linkable:} Share the app with a simple URL
 \end{itemize}
+\todo[inline]{Separate in another subsection: "Architecture", for example. Maybe is a good idea to have a diagram...next iteration}
 
-In practice, Progressive Web Apps contains 3 main components : the web app manifest, the service worker and the app shell.
+\subsection{Architecture}
+
+In practice, Progressive Web Apps contains 3 main components : the web app manifest, the service worker and the app shell (see figure ).
 
 \medskip
 \textbf{App Manifest} \newline
-The web app manifest is a JSON file containing the metadata concerning the native display of the app once installed on the user's phone. In this file, the developer can define the app's metadatasuch as the splash screen, the app icon, the theme color and the app title. Without it, the browser would not detect it is a PWA even if it has registered a service worker.
+The web app manifest is a JSON file containing the metadata concerning the native display of the app once installed on the user's phone. In this file, the developer can define the app's metadata such as the splash screen, the app icon, the theme color and the app title. Without it, the app is uninstallable.
 
 \medskip
 \textbf{Service Worker} \newline
-The service worker is the central part of a PWA. It is responsible for new background features such as push notifications, offline experience and background synchronization\cite{SW_def}. The service worker acts as a proxy server for the PWA: it intercepts requests, cache the response or give the already cached response. As a worker, it doesn't have access to the DOM and works on a different thread as the main app. 
+The service worker is the central part of a PWA. It is responsible for the new background features such as push notifications, offline experience and background synchronization\cite{SW_def}. The service worker acts as a proxy server for the PWA: it intercepts requests, cache the response or give the already cached response. As a worker, it doesn't have access to the DOM and works on a different thread as the main app. 
 
 \medskip
 \textbf{App shell} \newline
 The app shell is essentially the User Interface of the app without any content \cite{AppShell_def}. By caching it via the service worker, it offers the user a better performance with instant loading of the UI on repeat visits and a better low-connectivity experience.
 
 
-\subsection{Academic Research} \todo[inline, color=orange!40]{Related work?}
+\subsection{Academic Research} 
+%\todo[inline, color=orange!40]{Related work?}
 
-\todo[inline, color=orange!40]{No more than 6 sentences per cite in related work. Relevant work, limitations and differences with this thesis}
+%\todo[inline, color=orange!40]{No more than 6 sentences per cite in related work. Relevant work, limitations and differences with this thesis}
 
 Though Progressive Web Apps have sparked a real interest in the mobile and web development industry, only a few research papers studied them\cite{PWApossibleUnifer} \cite{Biorn-Hansen2} \cite{Biorn-Hansen3}.
 \paragraph{}
@@ -199,9 +200,8 @@ Lastly, only two research papers examined the user experience offered by Progres
 \section{Profiling tools}
 
 Profiling tools are software or command-line tools that help developers evaluate the performance of their app or identify performance bottlenecks. They can measure metrics such as \%CPU, the memory used or functions called during a recording.
-This section presents several profiling tools for Android and Web applications.
+This section introduces several profiling tools for Android and Web applications.
 
-\todo[inline, color=orange!40]{This seems like a methodology to me.}
 
 
 \subsection{Android}
@@ -240,26 +240,30 @@ Chrome DevTools Protocol \cite{CDP} is a set of commands and events used to comm
 
 \section{Rendering Pipeline}
 
+\todo[inline, color=orange!40]{Maybe a quick introduction for this section. "Why is important to know how the rendering pipeline works?"}
+The smoothness of an application greatly depends on the frame rate. The faster an app can produce a new frame, the faster it can display a response to user input and the more animations it can properly handle without blocking the user interaction. \newline
+Though the goal of Progressive Web Apps is to look and behave the same as mobile application once installed on a smartphone, they rely on different technologies to do so. Thus, the rendering pipeline (the stages by which a frame is produced) can differ.
+
+
 \subsection{Android}
-\todo[inline, color=orange!40]{Android}
 
 The Android Graphics pipeline is divided between 3 main components: the Application Renderers, SurfaceFlinger and the Hardware Composer \cite{android_graphics}.
-When an application wants to display something on the screen, its Application Renderer (usually provided by Android framework) gives a buffer of graphical data to SurfaceFlinger. SurfaceFlinger then takes all available buffers and composes them into a single buffer that it passes on to the Hardware Composer (see Figure 2.1). The Hardware Composer is responsible for actually displaying the buffer on the screen.
+When an application wants to display something on the screen, its Application Renderer (usually provided by Android framework) gives a buffer of graphical data to SurfaceFlinger. SurfaceFlinger then takes all available buffers and composes them into a single buffer that it passes on to the Hardware Composer (see figure \ref{fig:android_data}). The Hardware Composer is responsible for actually displaying the buffer on the screen.
 \newline
 
 \begin{figure}[!ht]
     \includegraphics[width=13cm]{kththesis/Figures/android_data_flow.png}
     \caption[Graphic data flow through Android]{Graphic data flow through Android \footnotemark}
-    \label{fig:my_label}
+    \label{fig:android_data}
 \end{figure}
 
-\footnotetext{source: \url{https://source.android.com/devices/graphics}}
+\footnotetext{Source: \url{https://source.android.com/devices/graphics}}
 
-Everything displayed on the screen had to go through SurfaceFlinger and the Hardware Composer.
+Everything displayed on the screen have to go through SurfaceFlinger and the Hardware Composer.
 All these components synchronize with each other thanks to the VSYNC signal \cite{vsync}. When VSYNC signal is fired, all three components wake up : the App Renderers generates frame N, SurfaceFlinger takes a look inside the BufferQueue and composes frame N+1 if a new buffer is available, and the Hardware Composer displays frame N+2. The VSYNC signal depends on the device refresh rate, usually set at 60Hz though some new devices also support 90 or 120Hz \cite{refresh_rate}.
 
 \paragraph{}
-Application rendering itself is divided into different stages \cite{app_rendering}:
+Application rendering itself is divided into 7 different stages \cite{app_rendering}:
 \begin{enumerate}
     \item Input handling : executes input events callbacks
     \item Animation: executing animators callbacks
@@ -273,24 +277,32 @@ Application rendering itself is divided into different stages \cite{app_renderin
 The Application rendering of Android's framework is synchronous as each stage will happen one after another. Only Input handling and Animation may not always happen depending on inputs and callbacks.
 
 \subsection{Chrome}
-\todo[inline, color=orange!40]{PWA}
-Before understanding Chrome's rendering pipeline, it is best to first understand its architecture. It is based on multiple processes running at the same time, with each its specific function \cite{chrome_architecture}:
+Before understanding Chrome's rendering pipeline, it is best to first understand its architecture. It is based on multiple processes running at the same time, with each its specific function \cite{chrome_architecture} (see figure \ref{fig:chrome_architecture}):
 \begin{itemize}
     \item Browser: controls everything related to the browser such as address bar, network requests and file access.
     \item GPU: displays all the elements on the screen by calling the OS's graphics library.
     \item Renderer: runs the web application. Each tab has its own Renderer sandboxed process with limited rights to protect the user and avoid the browser crashing.
-    \item: Plugin: runs the plugins used by the web application.
+    \item Plugin: runs the plugins used by the web application.
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=13cm]{kththesis/Figures/chrome_architecture.png}
+    \caption[Chrome's multi-process architecture]{Chrome's multi-process architecture \footnotemark}
+    \label{fig:chrome_architecture}
+\end{figure}
+
+\footnotetext{Source: \textit{Inside look at modern web browser (part 1)} \cite{chrome_architecture}}
 
 Each process also have several threads running at the same time for optimization.
 
 \paragraph{}
-Chrome's rendering pipeline contains similar stages as Android's application rendering \cite{chrome_pixel}:
+Chrome's rendering pipeline \cite{chrome_pixel} contains similar stages as Android's application rendering but with some differences: \todo[inline, color=orange!40]{Emphasize the different stages}
 \begin{enumerate}
     \item Parsing: translates the HTML into a DOM Tree.
     \item Styling: applies CSS style to DOM elements.
     \item Layout: computes the geometry of DOM elements (size and position) and produce a layout tree.
-    \item Compositing: decompose the page into layers which can be independently painted and rastered.
+    \item Compositing: decomposes the page into layers which can be independently painted and rastered.
     \item Pre-painting: build the property tree to apply to each layer.
     \item Painting: records paint operations into a list of display items.
     \item Tiling: divides the layers into tiles making its rastering less expensive if only a part of it is needed
@@ -299,7 +311,8 @@ Chrome's rendering pipeline contains similar stages as Android's application ren
 \end{enumerate}
 Every Renderer and the Browser Process can compute frames according the pipeline described above. The GPU process then aggregates all Compositor Frames according to the surface they represent on the screen  and sends calls to the OS's graphics library. For Android, that means pushing a buffer of graphic data to SurfaceFlinger.
 \newline
-However, some stages can be skipped depending on the change between two frames. For example when scrolling, parsing is not needed as the DOM Tree did not changed.
+As opposed to Android, the output of the different stages are reused whenever possible and the view is divided so that a small change in the view triggers only a small amount of work to render it. 
+For example scrolling only changes the position of a layer. There is no need to go through parsing, styling and layout again, maybe even pre-painting, painting, tiling and rastering if it it was already done.
 
 \section{Problem Analysis}
 
@@ -316,8 +329,6 @@ As stated above, Android applications and Web Applications on Chrome share two c
 
 \paragraph{}
 This chapter provided the necessary background to conduct this research and additional motivation and limitations. The next chapter will focus on the method of comparison of PWAs and Mobile Applications and the tools used to do so.
-
-\todo[inline, color=orange!40]{Every chapter should have a conclusion and an introduction to the next chapter. No more than 5 sentences. Overall conclusion about the chapter, for example}
     
 
 \chapter{Methodology}
