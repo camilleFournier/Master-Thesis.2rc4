@@ -102,10 +102,6 @@ Considering the overwhelming usage of Google Chrome on Android devices, this pap
 
 \chapter{Background}
 
-%\todo[inline]{Every chapter should have a summary introduction. What is this chapter about?... For example, In this chapter we talk about Android application development, profiling tools...}
-
-%\todo[inline]{Write here every needed background, for example, what is an emulator? etc}
-
 This chapter presents the terminology and concepts related to this study, as well as previous research done on Progressive Web Apps and available tools to measure Android apps and PWA's performance.  
 
 \section{Mobile applications}
@@ -113,7 +109,7 @@ This chapter presents the terminology and concepts related to this study, as wel
 There is a number of ways to develop a mobile application today. One of the most common approach is to develop it natively, that is develop the mobile application once for each targeted platform (mainly iOS, Android) using their respective environment, Software Development Kit and programming language. Since this can be quite costly, an alternative has emerged in the form of cross-platform development. It is itself divided in several different approaches implemented by different frameworks. Such approaches share a common characteristic: the use of the same code to build the application for several platforms. 
 Traditionally, cross-platform development is divided into four different approaches \cite{CrossPlatform_dev} :
 \begin{itemize}
-    \item Web : The web app is run by the browser on the mobile device. PWAs are an improvement of this approach
+    \item Web : The web app is run by the browser on the mobile device. PWAs are an improvement of this approach.
     \item Hybrid : The application is built using web technology but executed inside a native container. The app is rendered through full screen web-views. Frameworks like PhoneGap and Ionic \cite{crossplatform_approaches} use this approach.
     \item Interpreted : The application code is ran by an interpreter which uses native components to create a native user interface. Frameworks like React Native, NativeScript and Titanium \cite{emulating_native_w_crossplatform} use this approach.
     \item Cross-Compiled : The source code is compiled into a native application by a cross-platform compiler. Xamarin \cite{crossplatform_approaches} uses this approach. 
@@ -121,7 +117,7 @@ Traditionally, cross-platform development is divided into four different approac
 
 
 \subsection{Emulators}
-    It is considered a largely accepted best practice to test an under development before production. This can be done using physical devices or emulators. An emulator is a software that simulates the software and hardware capabilities of a device\cite{emulator_def}. This can be a great way to automate testing among a large range of smartphones. Most of the Android emulators found during this research are targeted are gamers and enhance the hardware capabilities usually found in the simulated physical device. Only a few can be used by developers to test the performance of their applications among different smartphones.
+    It is considered a largely accepted best practice to test an application under development before production. This can be done using physical devices or emulators. An emulator is a software that simulates the software and hardware capabilities of a device\cite{emulator_def}. This can be a great way to automate testing among a large range of smartphones. Most of the Android emulators found during this research are targeted at gamers and enhance the hardware capabilities usually found in the simulated physical device. Only a few can be used by developers to test the performance of their applications among different smartphones:
     
 \paragraph{}
 \textbf{Android Emulator} \cite{android_emulator} is the official emulator for Android provided by Google along Android Studio. It offers the latest Android APIs but a limited range of physical devices. However, it is possible to customize hardware characteristics and the device's look.
@@ -130,7 +126,7 @@ Traditionally, cross-platform development is divided into four different approac
 \textbf{Genymotion} \cite{genymotion_emulator} contains a wider range of smartphones but less APIs than Android Emulator. Genymotion can be linked with Android Studio in order to test in-development apps. It is also possible to customize hardware characteristics.
 
 \paragraph{}
-\textbf{Visual Studio Android Emulator} \cite{microsoft_emulator} is the solution offered by Microsoft on Visual Studio. However, it is not supported since Visual Studio 2017 and recommend instead to use the official Android Emulator. It offers a limited set of hardware and API configurations that matches several smartphones at once. 
+\textbf{Visual Studio Android Emulator} \cite{microsoft_emulator} is the solution offered by Microsoft on Visual Studio. However, it is not supported since Visual Studio 2017. They recommend instead to use the official Android Emulator. It offers a limited set of hardware and API configurations that matches several smartphones at once. 
 
 \section{Progressive Web Apps}
 
@@ -140,7 +136,7 @@ A Progressive Web , or PWA in short, is a regular web application with a few mor
 The concept of Progressive Web Apps holds a lot of potential \cite{PWApossibleUnifer}. It could allow developers to use the same code for the web, the mobile, and the desktop app depending on browser implementations. This would considerably reduce the development and maintenance cost of a single application. Moreover, deployments and updates wouldn't have to go through the app stores to be available to users, further reducing the cost and increasing access to the app.
 \paragraph{}
 In order to be called a Progressive, a web application has to implement several features\cite{PWA_def}:
-\textendash
+
 %\renewcommand{\labelitemi}{$\textbullet$}
 %command doesn't work for unknown reason
 \begin{itemize}
@@ -155,7 +151,6 @@ In order to be called a Progressive, a web application has to implement several 
     \item \textbf{Installable:} Save the app on the home screen without going through an app store
     \item \textbf{Linkable:} Share the app with a simple URL
 \end{itemize}
-\todo[inline]{Separate in another subsection: "Architecture", for example. Maybe is a good idea to have a diagram...next iteration}
 
 \subsection{Architecture}
 
@@ -167,7 +162,7 @@ The web app manifest is a JSON file containing the metadata concerning the nativ
 
 \medskip
 \textbf{Service Worker} \newline
-The service worker is the central part of a PWA. It is responsible for the new background features such as push notifications, offline experience and background synchronization\cite{SW_def}. The service worker acts as a proxy server for the PWA: it intercepts requests, cache the response or give the already cached response. As a worker, it doesn't have access to the DOM and works on a different thread as the main app. 
+The service worker is the central part of a PWA. It is responsible for the new background features such as push notifications, offline experience and background synchronization\cite{SW_def}. The service worker acts as a proxy server for the PWA: it intercepts requests, caches the response or gives the already cached response. As a worker, it does not have access to the DOM and works on a different thread as the main app. 
 
 \medskip
 \textbf{App shell} \newline
@@ -175,9 +170,6 @@ The app shell is essentially the User Interface of the app without any content \
 
 
 \subsection{Academic Research} 
-%\todo[inline, color=orange!40]{Related work?}
-
-%\todo[inline, color=orange!40]{No more than 6 sentences per cite in related work. Relevant work, limitations and differences with this thesis}
 
 Though Progressive Web Apps have sparked a real interest in the mobile and web development industry, only a few research papers studied them\cite{PWApossibleUnifer} \cite{Biorn-Hansen2} \cite{Biorn-Hansen3}.
 \paragraph{}
@@ -186,7 +178,7 @@ Their results showed that the launch time was faster for a PWA than a mobile app
 Only one study concluded that PWA was slower was slower than a regular web app because of the HTTPS requests \cite{bac_pwa_comparison}. However, the comparison was made between a PWA served over HTTPS and a regular web app served between HTTP. Another other study \cite{bac_pwa_performance} which also compared a regular web and a PWA First Paint time did not find such results. 
 
 \paragraph{}
-Two research papers also investigated the energy consumption of PWA, though from a different angle. Malavolta et al.\cite{SW_and_energy} focused on the impact of service workers on PWA's energy consumption and found no significant significant impact. Kerssens \cite{PWAapplicability} on the other hand measured the average energy consumption when running the app and found PWA consumes slightly less than its native counterpart. 
+Two research papers also investigated the energy consumption of PWA, though from a different angle. Malavolta et al.\cite{SW_and_energy} focused on the impact of service workers on PWA's energy consumption and found no significant impact. Kerssens \cite{PWAapplicability} on the other hand measured the average energy consumption when running the app and found PWA consumes slightly less than its native counterpart. 
 
 \paragraph{}
 Fransson and Driaguine \cite{PWAbc_responsetime} compared the response time of PWAs and Native Android Applications when accessing the camera en geolocation. The Progressive Webb App was surprisingly faster at using geolocation than its native counterpart. However, the camera was accessed faster from the native app than the PWA.
@@ -240,8 +232,7 @@ Chrome DevTools Protocol \cite{CDP} is a set of commands and events used to comm
 
 \section{Rendering Pipeline}
 
-\todo[inline, color=orange!40]{Maybe a quick introduction for this section. "Why is important to know how the rendering pipeline works?"}
-The smoothness of an application greatly depends on the frame rate. The faster an app can produce a new frame, the faster it can display a response to user input and the more animations it can properly handle without blocking the user interaction. \newline
+The smoothness of an application greatly depends on the frame rate. The faster an app can produce a new frame, the faster it can display a response to user input and the more animations it can properly handle without blocking user interaction. \newline
 Though the goal of Progressive Web Apps is to look and behave the same as mobile application once installed on a smartphone, they rely on different technologies to do so. Thus, the rendering pipeline (the stages by which a frame is produced) can differ.
 
 
@@ -281,7 +272,7 @@ Before understanding Chrome's rendering pipeline, it is best to first understand
 \begin{itemize}
     \item Browser: controls everything related to the browser such as address bar, network requests and file access.
     \item GPU: displays all the elements on the screen by calling the OS's graphics library.
-    \item Renderer: runs the web application. Each tab has its own Renderer sandboxed process with limited rights to protect the user and avoid the browser crashing.
+    \item Renderer: runs the web application. Each tab has its own Renderer sandboxed process with limited rights to protect the user and avoid crashing the browser.
     \item Plugin: runs the plugins used by the web application.
 \end{itemize}
 
@@ -297,7 +288,7 @@ Before understanding Chrome's rendering pipeline, it is best to first understand
 Each process also have several threads running at the same time for optimization.
  
 \paragraph{}
-Chrome's rendering pipeline \cite{chrome_pixel} contains similar stages as Android's application rendering but with some differences: \todo[inline, color=orange!40]{Emphasize the different stages}
+Chrome's rendering pipeline \cite{chrome_pixel} contains similar stages as Android's application rendering but with some differences: 
 \begin{enumerate}
     \item Parsing: translates the HTML into a DOM Tree.
     \item Styling: applies CSS style to DOM elements.
