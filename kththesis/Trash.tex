@@ -3,6 +3,17 @@
 \chapter{Introduction}
 \section{Research questions}
 
+Due to its cross-platform capabilities, Progressive Web Apps seems like a promising alternative to native development. However, this shouldn't come at the cost of app performance and user experience, especially in regards to smoothness.
+Thus, this paper will aim at answering the question : 
+\begin{center}
+    \textit{Can Progressive Web Apps be as smooth as Mobile Applications ?}
+\end{center}
+Which raises the following sub-questions: 
+\begin{enumerate}
+    \item What metrics are relevant to compare the smoothness of Mobile and Progressive Web Apps?
+    \item What tools are available to measure those metrics ?
+\end{enumerate}
+
 \iffalse
 Primary research question : 
 \newline \textit{How efficient can Progressive Web Apps be compared to a Native Android Application?}
@@ -103,6 +114,9 @@ However, this tool is not suited for automatic data collection as the results ar
 \textbf{Monkeyrunner} \cite{monkeyrunner} is a tool used to interact with an Android device from a Python script. Aside from sending events and executing \textit{adb shell} commands, it can also take screenshots to test the app. This tool was used to automate the experiment and remove the variables introduced by human interaction from the experiments. 
 
 \subsection{Chrome}
+
+As Progressive Web Apps are after all web applications that runs on the browser, many of the tools available depends on the browser running the app. Thus, the tools presented here may only apply to apps running on Chrome.
+
 \paragraph{}
 \textbf{Chrome DevTools} is a set of developer tools available in the Chrome Browser in order to inspect a page on the browser (the network, the performance, the memory, the elements, etc). The main tool of interest here is the \textit{Performance} panel \cite{chrome_devtools_perf} which can record certain events during a period of time and display a lot of information from these events. Among the features of interest are : the display of the duration of a frame as well as the CPU time used to compute it, a CPU, an FPS and a memory chart in addition to a timeline of different events recorded.
 
@@ -116,5 +130,59 @@ Multiple Application Renderers can communicate with SurfaceFlinger at the same t
 
 \subsection{Chrome}
 However, some stages can be skipped depending on the change between two frames.
+
+\section{Problem analysis}
+In the light of the background described above, this sections provides additional motivation and limitations for the research questions. 
+\paragraph{}
+\textbf{Motivation} \newline
+
+Previous research about Progressive Web Apps performance focused mainly on the performance at start-up (loading time, first paint) but none was found that studied the rendering performance during use. To my best knowledge, this research will be the first to do so.
+
+\medskip
+\textbf{Limitations} \newline
+As stated above, Android applications and Web Applications on Chrome share two components of the display pipeline (SurfaceFlinger and the Hardware Composer) but differ greatly in the Application Renderer. Thus this research will focus on comparing the smoothness of Android applications and Progressive Web Apps in regards to this last component. 
+
+Thus, this paper will analyze smoothness performance of the applications by looking at the average frame duration, as well as CPU and memory used to compare the resources used. 
+
+\chapter{Methodology}
+\section{Comparing the Rendering Process}
+   
+    The background section presented an overview of Android's Garphics pipeline, with the Application Renderer itself divided into 7 stages : input handling, animation, measurement and layout, draw, sync and upload, issue commands, process and swap buffers. 
+    
+    It is possible to extract detailed information about an Android application frames thanks to the command \textit{adb shell dumpsys gfxinfo framestats}. This outputs multiple graphic information, such as total number of frames rendered, number of janky frames
+    
+    We can observe some of those stages in a Systrace recorded with the command: \textit{python systrace.py sched gfx view app -a [package-name] -o [output-file]}.
+    
+    \begin{figure}[!ht]
+        \includegraphics[width=15cm]{kththesis/Figures/android_systrace_frame.jpg}
+        \caption{Application Renderer on Android}
+        \label{fig:android_systrace}
+    \end{figure}
+    
+    
+    \subsection{Chrome's pipeline}
+    \todo[inline, color=cyan!20]{Describe Chrome's pipeline model and how I came up with it}
+    \subsection{Method of comparison}
+    \todo[inline, color=cyan!20]{Conclusions on how to compare both pipelines: a) definition of a frame b) benchmark apps used}
+\section{Comparing CPU and Memory}
+    \subsection{Android and Chrome tools}
+    \todo[inline, color=cyan!20]{Describe available tools on Android and Chrome}
+    \todo[inline]{Move to Background}
+    \subsection{Evaluating Chrome tools}
+    \todo[inline, color=cyan!20]{Describe Experiments used to compare Android and Chrome tools, and their results}
+    \subsection{Evaluating Emulators}
+    \todo[inline, color=cyan!20]{Explain why Emulators are no good for evaluating CPU and Memory}
+
+We will focus on the fluidity of the apps that can be defined with Frame Per Second (FPS) rate.
+Thus, we will compare the FPS rate of a Native Android Application and a Progressive Web App, as well as with a benchmark consisting of : 
+    - an app displaying different image/texts every 16/17ms
+    - an app with more effort on the CPU : modification of the same pictures/texts or new pictures/texts generated randomly.
+\newline
+
+We will measure FPS, CPU and Memory usage to see the impact of CPU and Memory usage in the fluidity of the app.
+\newline
+
+\subsection{Scripts implementation}
+\todo[inline]{Explain your technical contributions}
 
 \end{document}

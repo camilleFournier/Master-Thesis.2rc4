@@ -1,8 +1,11 @@
+
 \documentclass{kththesis}
 
 \usepackage{graphicx}
 \usepackage{todonotes}
 \usepackage{blindtext} % This is just to get some nonsense text in this template, can be safely removed
+\usepackage{hyperref}
+\usepackage{subcaption}
 
 \usepackage{csquotes} % Recommended by biblatex
 \usepackage[style=numeric,sorting=none,backend=biber]{biblatex}
@@ -83,12 +86,12 @@ This section will introduce the concept of Progressive Web Apps and the objectiv
 Due to its cross-platform capabilities, Progressive Web Apps seems like a promising alternative to native development. However, this shouldn't come at the cost of app performance and user experience, especially in regards to smoothness.
 Thus, this paper will aim at answering the question : 
 \begin{center}
-    \textit{Can Progressive Web Apps be as smooth as Mobile Applications ?}
+    \textit{Are Progressive Web Apps as performant as Mobile Applications in terms of smoothness?}
 \end{center}
-Which raises the following sub-questions: 
+Which can be divided into the sub-questions: 
 \begin{enumerate}
-    \item What metrics are relevant to compare the smoothness of Mobile and Progressive Web Apps?
-    \item What tools are available to measure those metrics ?
+    \item Are Progressive Web Apps as smooth as Mobile Applications ?
+    \item How many resources are used to render a smooth application ?
 \end{enumerate}
 
 \section{Limitations}
@@ -128,70 +131,9 @@ Traditionally, cross-platform development is divided into four different approac
 \paragraph{}
 \textbf{Visual Studio Android Emulator} \cite{microsoft_emulator} is the solution offered by Microsoft on Visual Studio. However, it is not supported since Visual Studio 2017. They recommend instead to use the official Android Emulator. It offers a limited set of hardware and API configurations that matches several smartphones at once. 
 
-\section{Progressive Web Apps}
-
-\subsection{Concept}
-
-A Progressive Web , or PWA in short, is a regular web application with a few more features. Its aim is to reduce the gap between mobile and web development. Once it is installed, a PWA should behave just like a native app for the end-users. Thus, they should not be aware of the browser running the app behind the scene, and be able to launch the app without internet connectivity. \newline
-The concept of Progressive Web Apps holds a lot of potential \cite{PWApossibleUnifer}. It could allow developers to use the same code for the web, the mobile, and the desktop app depending on browser implementations. This would considerably reduce the development and maintenance cost of a single application. Moreover, deployments and updates wouldn't have to go through the app stores to be available to users, further reducing the cost and increasing access to the app.
-\paragraph{}
-In order to be called a Progressive, a web application has to implement several features\cite{PWA_def}:
-
-%\renewcommand{\labelitemi}{$\textbullet$}
-%command doesn't work for unknown reason
-\begin{itemize}
-    \item \textbf{Progressive:} Work for every browser
-    \item \textbf{Responsive:} Fit any screen size
-    \item \textbf{Connectivity independent:} Able to work offline or with low-connectivity thanks to a service worker
-    \item \textbf{App-like:} Have a Native-like interaction by using the app-shell model
-    \item \textbf{Fresh:} Keep the app up-to-date with the service worker
-    \item \textbf{Safe:} Served over TLS to prevent snooping and content tampering
-    \item \textbf{Discoverable:} Identifiable as "applications" thanks to W3C manifests and service workers
-    \item \textbf{Re-engageable:} Use re-engagement features like push-notifications
-    \item \textbf{Installable:} Save the app on the home screen without going through an app store
-    \item \textbf{Linkable:} Share the app with a simple URL
-\end{itemize}
-
-\subsection{Architecture}
-
-In practice, Progressive Web Apps contains 3 main components : the web app manifest, the service worker and the app shell (see figure ).
-
-\medskip
-\textbf{App Manifest} \newline
-The web app manifest is a JSON file containing the metadata concerning the native display of the app once installed on the user's phone. In this file, the developer can define the app's metadata such as the splash screen, the app icon, the theme color and the app title. Without it, the app is uninstallable.
-
-\medskip
-\textbf{Service Worker} \newline
-The service worker is the central part of a PWA. It is responsible for the new background features such as push notifications, offline experience and background synchronization\cite{SW_def}. The service worker acts as a proxy server for the PWA: it intercepts requests, caches the response or gives the already cached response. As a worker, it does not have access to the DOM and works on a different thread as the main app. 
-
-\medskip
-\textbf{App shell} \newline
-The app shell is essentially the User Interface of the app without any content \cite{AppShell_def}. By caching it via the service worker, it offers the user a better performance with instant loading of the UI on repeat visits and a better low-connectivity experience.
-
-
-\subsection{Academic Research} 
-
-Though Progressive Web Apps have sparked a real interest in the mobile and web development industry, only a few research papers studied them\cite{PWApossibleUnifer} \cite{Biorn-Hansen2} \cite{Biorn-Hansen3}.
-\paragraph{}
-When studying performance, a large portion of the researched papers focused on the app start-up times. They measured either the total launch time\cite{YbergViktor2018NPaU} \cite{PWApossibleUnifer} \cite{Biorn-Hansen2}, the time from app-icon to toolbar render \cite{PWApossibleUnifer} \cite{Biorn-Hansen2}, the first paint \cite{bac_pwa_comparison} \cite{bac_pwa_performance} \cite{PWAapplicability} or other metrics related to start up \cite{bac_pwa_performance} \cite{bac_pwa_comparison}.
-Their results showed that the launch time was faster for a PWA than a mobile app when the browser was already in memory. The app icon from toolbar render as well as the first paint metrics also showed that PWA was one of the fastest among the apps tested.\newline
-Only one study concluded that PWA was slower was slower than a regular web app because of the HTTPS requests \cite{bac_pwa_comparison}. However, the comparison was made between a PWA served over HTTPS and a regular web app served between HTTP. Another other study \cite{bac_pwa_performance} which also compared a regular web and a PWA First Paint time did not find such results. 
-
-\paragraph{}
-Two research papers also investigated the energy consumption of PWA, though from a different angle. Malavolta et al.\cite{SW_and_energy} focused on the impact of service workers on PWA's energy consumption and found no significant impact. Kerssens \cite{PWAapplicability} on the other hand measured the average energy consumption when running the app and found PWA consumes slightly less than its native counterpart. 
-
-\paragraph{}
-Fransson and Driaguine \cite{PWAbc_responsetime} compared the response time of PWAs and Native Android Applications when accessing the camera en geolocation. The Progressive Webb App was surprisingly faster at using geolocation than its native counterpart. However, the camera was accessed faster from the native app than the PWA.
-
-\paragraph{}
-Lee et al. \cite{Pride_Prejudice} explored the security system behind the push notification system for Progressive Web Apps and found several concerning flaws which they reported to the vendors. 
-
-\paragraph{}
-Lastly, only two research papers examined the user experience offered by Progressive Web Apps. Cardieri and Zaina \cite{PWA_UX_comparison_study} conducted a qualitative analysis of user experience on three platforms: web mobile, native android and PWA. They concluded that there was no significant difference of user experience between the platforms. Fredrikson \cite{emulating_native_w_crossplatform} also supports this conclusion with a quantitative and a qualitative study comparing user experience with a React Native App, a Native Android App and a Progressive Web App. 
-
 \section{Profiling tools}
 
-Profiling tools are software or command-line tools that help developers evaluate the performance of their app or identify performance bottlenecks. They can measure metrics such as \%CPU, the memory used or functions called during a recording.
+Profiling tools are software or command-line tools that help developers evaluate the performance of their app and identify performance bottlenecks. They can measure metrics such as \%CPU, the memory used or functions called during a recording.
 This section introduces several profiling tools for Android and Web applications.
 
 
@@ -204,20 +146,20 @@ Not many tools are available to profile Android applications aside from Android 
 Fortunately, Android also provides other command-line tools to profile applications. Most of them are only available through Android Debug Bridge (ADB) \cite{adb} which allows a computer to communicate with a device either to get information or execute commands. 
 
 \paragraph{}
-For example, dumpsys \cite{dumpsys} can provide a lot of information about the device or the processes currently running. This information is available through the system services such as \textit{meminfo} (memory), \textit{cpuinfo}, \textit{gfxinfo} (animation), \textit{netstats} (network) or \textit{batterystats} (battery).
+For example, dumpsys \cite{dumpsys} can provide a lot of information about the device or the processes currently running. This information is available through the system services such as \textit{meminfo} (memory), \textit{cpuinfo} (CPU usage), \textit{gfxinfo} (animation), \textit{netstats} (network) or \textit{batterystats} (battery).
 
 \paragraph{}
-Another example is top. It comes from the Linux command-line of the same name \cite{top}, but with limited options. It displays the process activity in real-time such as CPU, memory and priority.
+Another example is top. It comes from the Linux command-line of the same name \cite{top}, but with limited options. It displays the process activity in real-time such as CPU, memory and process priority.
 
 \paragraph{}
 Systrace \cite{systrace} is also a useful tool and does not require ADB. It records a device activity and outputs an HTML file which can be viewed on Chrome browser. This file displays a timeline of events for each threads running during the recording, the CPU activity divided for each CPU, frames and other events depending on the categories of events selected. It is mainly used to identify the cause of bottlenecks in an application.
 
 \paragraph{}
-While not a profiling tool in itself, Monkeyrunner \cite{monkeyrunner} is a useful tool when testing an application. Its purpose is to automate testing by interacting with the device from a Python script. It can also take snapshots or execute \textit{adb shell} commands, such as dumpsys and top viewed previously. 
+While not a profiling tool in itself, Monkeyrunner \cite{monkeyrunner} is a useful tool when testing an application. Its purpose is to automate testing by interacting with the device from a Python script. It can also take snapshots or execute \textit{adb shell} commands, such as \textit{dumpsys} and top viewed previously. 
 
 \subsection{Progressive Web App}
 
-As Progressive Web Apps are after all web applications that runs on the browser, many of the tools available depends on the browser running the app. Thus, the tools presented here may only apply to apps running on Chrome.
+Even though Progressive Web Apps can be installed and managed like a native application for the end-user, they are still web applications. Thus, they have their own set of profiling tools provided by the browser. Since this study is limited to PWAs running on Chrome, this section will focus on Chrome's profiling tools. They may not work on other browsers.
 
 \paragraph{}
 One of them is Chrome DevTools, a complete set of developer tools available in Chrome Browser. It is divided into several panels each with its own purposes. For example, the \textit{Network} panel displays all requests done by the web app, the \textit{Console} panel displays debug and error messages and the \textit{Performance} panel \cite{chrome_devtools_perf} displays an overview of the app performance, such as a timeline of function calls, a CPU graph, a memory graph and information regarding frames. 
@@ -305,39 +247,222 @@ Every Renderer and the Browser Process can compute frames according the pipeline
 As opposed to Android, the output of the different stages are reused whenever possible and the view is divided so that a small change in the view triggers only a small amount of work to render it. 
 For example scrolling only changes the position of a layer. There is no need to go through parsing, styling and layout again, maybe even pre-painting, painting, tiling and rastering if it it was already done.
 
-\section{Problem Analysis}
+\section{Progressive Web Apps}
 
-In the light of the background described above, this sections provides additional motivation and limitations for the research questions. 
+\subsection{Concept}
+
+A Progressive Web , or PWA in short, is a regular web application with a few more features. Its aim is to reduce the gap between mobile and web development. Once it is installed, a PWA should behave just like a native app for the end-users. Thus, they should not be aware of the browser running the app behind the scene, and be able to launch the app without internet connectivity. \newline
+The concept of Progressive Web Apps holds a lot of potential \cite{PWApossibleUnifer}. It could allow developers to use the same code for the web, the mobile, and the desktop app depending on browser implementations. This would considerably reduce the development and maintenance cost of a single application. Moreover, deployments and updates wouldn't have to go through the app stores to be available to users, further reducing the cost and increasing access to the app.
 \paragraph{}
+In order to be called a Progressive, a web application has to implement several features\cite{PWA_def}:
 
-\textbf{Motivation} \newline
-Previous research about Progressive Web Apps performance focused mainly on the performance at start-up (loading time, first paint) but none was found that studied the rendering performance during use. To my best knowledge, this research will be the first to do so.
+%\renewcommand{\labelitemi}{$\textbullet$}
+%command doesn't work for unknown reason
+\begin{itemize}
+    \item \textbf{Progressive:} Work for every browser
+    \item \textbf{Responsive:} Fit any screen size
+    \item \textbf{Connectivity independent:} Able to work offline or with low-connectivity thanks to a service worker
+    \item \textbf{App-like:} Have a Native-like interaction by using the app-shell model
+    \item \textbf{Fresh:} Keep the app up-to-date with the service worker
+    \item \textbf{Safe:} Served over TLS to prevent snooping and content tampering
+    \item \textbf{Discoverable:} Identifiable as "applications" thanks to W3C manifests and service workers
+    \item \textbf{Re-engageable:} Use re-engagement features like push-notifications
+    \item \textbf{Installable:} Save the app on the home screen without going through an app store
+    \item \textbf{Linkable:} Share the app with a simple URL
+\end{itemize}
+
+\subsection{Architecture}
+
+In practice, Progressive Web Apps contains 3 main components : the web app manifest, the service worker and the app shell (see figure ).
 
 \medskip
-\textbf{Limitations} \newline
-As stated above, Android applications and Web Applications on Chrome share two components of the display pipeline (SurfaceFlinger and the Hardware Composer) but differ greatly in the Application Renderer. Thus this research will focus on comparing the smoothness of Android applications and Progressive Web Apps in regards to this last component. 
+\textbf{App Manifest} \newline
+The web app manifest is a JSON file containing the metadata concerning the native display of the app once installed on the user's phone. In this file, the developer can define the app's metadata such as the splash screen, the app icon, the theme color and the app title. Without it, the app is uninstallable.
+
+\medskip
+\textbf{Service Worker} \newline
+The service worker is the central part of a PWA. It is responsible for the new background features such as push notifications, offline experience and background synchronization\cite{SW_def}. The service worker acts as a proxy server for the PWA: it intercepts requests, caches the response or gives the already cached response. As a worker, it does not have access to the DOM and works on a different thread as the main app. 
+
+\medskip
+\textbf{App shell} \newline
+The app shell is essentially the User Interface of the app without any content \cite{AppShell_def}. By caching it via the service worker, it offers the user a better performance with instant loading of the UI on repeat visits and a better low-connectivity experience.
+
+
+\subsection{Academic Research} 
+
+\todo[inline, color=green!20]{Try to find other peer-reviewed articles on PWA.}
+\todo[inline, color=cyan!20]{Do literature studies with no experiment work ?}
+
+Though Progressive Web Apps have sparked a real interest in the mobile and web development industry, only a few research papers studied them\cite{PWApossibleUnifer} \cite{Biorn-Hansen2} \cite{Biorn-Hansen3}.
+
+Biørn-Hansen, Machrazk and Grønli tried to raise interest in the academic community with three successive papers: \textit{Progressive Web Apps: The Possible Web-native Unifier for Mobile Development} \cite{PWApossibleUnifer}, \textit{Progressive web apps for the unified development of mobile applications} \cite{Biorn-Hansen3} and \textit{Progressive Web Apps: the Definite Approach to Cross-platform development?} \cite{Biorn-Hansen3}. Their first two papers also included a study of PWA's performance compared to other mobile development approaches, namely hybrid and interpreted for their first paper, and native, hybrid, interpreted and cross-compiled for their second. They looked at launch time with \textit{am activity launch time} on Android Debug Bridge, the size of installation and the app-icon-to-toolbar-render time with an online stop watch. While the PWA was a lot smaller than any other app and launched faster, the time from app icon to toolbar render depended on whether the browser was already running on the background. If so, the PWA was the fastest and if not, only lost to the native and interpreted app. 
+
+\paragraph{}
+Other studies from bachelor and master's thesis support their results. Yberg \cite{YbergViktor2018NPaU} compared manually the launch time of an android native application and a PWA with and without the browser in memory. The PWA was faster (with the browser in memory) or as fast as the native application. Kressens \cite{PWAapplicability} compared the First Paint metric (time to render the first pixel) between a progressive web app, a regular web app and a native app for both Android and iOS, with a fast and slower network. He found that for both networks, the PWA was faster than the native app on Android but not on iOS. It was always faster than the regular web app, with a bigger difference with slow networks.
+
 
 
 \paragraph{}
-This chapter provided the necessary background to conduct this research and additional motivation and limitations. The next chapter will focus on the method of comparison of PWAs and Mobile Applications and the tools used to do so.
+Two research papers also investigated the energy consumption of PWA, though from a different angle. Malavolta et al.\cite{SW_and_energy} focused on the impact of service workers on PWA's energy consumption and found no significant impact. Kerssens \cite{PWAapplicability}, on the other hand, measured the average energy consumption when running the app and found PWA consumes slightly less than its native counterpart. 
+
+\paragraph{}
+Fransson and Driaguine \cite{PWAbc_responsetime} compared the response time of PWAs and Native Android Applications when accessing the camera en geolocation. The Progressive Webb App was surprisingly faster at using geolocation than its native counterpart. However, the camera was accessed faster from the native app than the PWA.
+
+\paragraph{}
+Johannsen \cite{JohannsenFabian2018PWAa} compared the code complexity brought by Progressive Web Applications compared to a regular application. He concluded that the added complexity was reasonnable with the automated tools provided by Angular.  
+
+\paragraph{}
+Lee et al. \cite{Pride_Prejudice} explored the security system behind the push notification system for Progressive Web Apps and found several concerning flaws which they reported to the vendors.
+
+\paragraph{}
+Khan et al. \cite{pwa_ahp} compared native, mobile web, hybrid and progressive web apps using an Analytical Hierarchy Process with three criteria : application size, multi-platform support and offline accessibility. They concluded in the superiority of Progressive Web Apps.  
+
+\paragraph{}
+Lastly, at the time of writing only two research papers examined the user experience offered by Progressive Web Apps. Cardieri and Zaina \cite{PWA_UX_comparison_study} conducted a qualitative analysis of user experience on three platforms: web mobile, native android and PWA. They concluded that there was no significant difference of user experience between the platforms. Fredrikson \cite{emulating_native_w_crossplatform} also supports this conclusion with a quantitative and a qualitative study comparing user experience with a React Native App, a Native Android App and a Progressive Web App. 
+
+\iffalse
+\paragraph{}
+When studying performance, a large portion of the researched papers focused on the app start-up times. They measured either the total launch time\cite{YbergViktor2018NPaU} \cite{PWApossibleUnifer} \cite{Biorn-Hansen2}, the time from app-icon to toolbar render \cite{PWApossibleUnifer} \cite{Biorn-Hansen2}, the first paint \cite{bac_pwa_comparison} \cite{bac_pwa_performance} \cite{PWAapplicability} or other metrics related to start up \cite{bac_pwa_performance} \cite{bac_pwa_comparison}.
+Their results showed that the launch time was faster for a PWA than a mobile app when the browser was already in memory. The app icon from toolbar render as well as the first paint metrics also showed that PWA was one of the fastest among the apps tested.\newline
+Only one study concluded that PWA was slower than a regular web app because of the HTTPS requests \cite{bac_pwa_comparison}. However, the comparison was made between a PWA served over HTTPS and a regular web app served between HTTP. Another  study \cite{bac_pwa_performance} which also compared a regular web app and a PWA First Paint time did not find such results. 
+
+\paragraph{}
+Two research papers also investigated the energy consumption of PWA, though from a different angle. Malavolta et al.\cite{SW_and_energy} focused on the impact of service workers on PWA's energy consumption and found no significant impact. Kerssens \cite{PWAapplicability} on the other hand measured the average energy consumption when running the app and found PWA consumes slightly less than its native counterpart. 
+
+\paragraph{}
+Fransson and Driaguine \cite{PWAbc_responsetime} compared the response time of PWAs and Native Android Applications when accessing the camera en geolocation. The Progressive Webb App was surprisingly faster at using geolocation than its native counterpart. However, the camera was accessed faster from the native app than the PWA.
+
+\paragraph{}
+Lee et al. \cite{Pride_Prejudice} explored the security system behind the push notification system for Progressive Web Apps and found several concerning flaws which they reported to the vendors. 
+
+\paragraph{}
+Lastly, only two research papers examined the user experience offered by Progressive Web Apps. Cardieri and Zaina \cite{PWA_UX_comparison_study} conducted a qualitative analysis of user experience on three platforms: web mobile, native android and PWA. They concluded that there was no significant difference of user experience between the platforms. Fredrikson \cite{emulating_native_w_crossplatform} also supports this conclusion with a quantitative and a qualitative study comparing user experience with a React Native App, a Native Android App and a Progressive Web App. 
+\fi
+
+
+\section{Problem Analysis}
+
+\todo[inline, color=green!40]{Develop the motivation: gap in the academic research and relevance of studying rendering}
+
+Though some security issues needs to be resolved \cite{Pride_Prejudice}, Progressive Web Apps have the potential to become a popular cross-platform solution for developing mobile applications. They don't add much complexity to a regular web app \cite{JohannsenFabian2018PWAa}, greatly reducing the cost of developing a mobile application for every platform, and have similar performance than mobile applications regarding launch time \cite{PWApossibleUnifer}\cite{Biorn-Hansen2} \cite{PWAapplicability}, energy consumption \cite{PWAapplicability}, user experience \cite{emulating_native_w_crossplatform}\cite{PWA_UX_comparison_study}, or even hardware access in some cases \cite{PWAbc_responsetime}. 
+\paragraph{}
+However, no study was found that examined the rendering performance of Progressive Web Apps. While it is important for the user that the app launches quickly \cite{launch_time}, it is also important that the app remains smooth during the time of use. \newline
+Thus, this paper will try to address this issue and study the smoothness of mobile applications and progressive web apps.
+
+Most of the time, the smoothness of an application is associated with its responsiveness i.e. how quickly it can respond to user input.
+
+As defined by nanana, "the principle of smoothness states that objects must change in a continuous fashion, which reduces cognitive load by removing large and unexpected changes in visual information presented to the user". In other words, a smooth animation changes frames and with little changes between them 
+
+In this work, the smoothness of an application is defined as how quickly it can change the display
+
+\paragraph{}
+The smoothness of a mobile application is usually evaluated using the frame rate, or FPS for frame rate per second \cite{smoothnessQoE} \todo[inline]{It would be good to clarify what is smoothness and fluidness}. Though as Biørn-Hansen et al. pointed out while studying animation performance in mobile applications, the FPS metric does not give much insight about the fluidness of a user interface where animations run only during a short amount of time and the remaining time is spent idle waiting for new inputs.
+\newline
+Thus, this paper will analyze the smoothness performance of the applications by looking at the average frame duration, as well as CPU and memory used to compare the resources used. 
+
+\todo[inline]{Try to extend this subsection. You can emphasize that there is no documentation to create smoothness research, since your model inferring was empirical.}
+
+
+
+
+\paragraph{}
+This chapter provided the necessary background to conduct this research and additional motivation. The next chapter will focus on the method of comparison of PWAs and Mobile Applications and the tools used to do so.
     
 
 \chapter{Methodology}
-\section{Comparing the Rendering Process}
-   
 
-    \subsection{Chrome's pipeline}
-    \todo[inline, color=cyan!20]{Describe Chrome's pipeline model and how I came up with it}
+\iffalse
+Do android tools work on PWA? (after all, there is a webAPK installed when installing the PWA)?
+    - cpuinfo : 3 processes shown -> but is there any other work done by Browser besides PWA ? Is there any other way to have \%CPU for PWA and be sure it is only that?
+        -> Chrome devtools performance panel cpu graph: how do they compute it ? (amount of time spent inside functions (between start and end time) but doesn't take into account time spent waiting for results or idle -> not accurate enough
+        -> cpu time metric computed with each frame (not used for cpu graph as cputime metric isn't computed in remote debugging but still display of the graph)
+        -> CDP SystemInfo -> doesn't work actually. Similar issue filed in 2018 on CDP github repo
+        -> Chrome devtools CPU sampling (v8.profiler thing)
+        
+        => computed \%CPU as measured with dumpsys cpuinfo, cputime from chome devtools and from cpu sampling from chrome devtools on a single-core emulated device : chrome devtools methods not accurate enough compared to dumpsys -> thus use dumpsys in future experiments
+        
+        
+    - meminfo (graphics ie  memory used by graphics data buffers) : works
+    
+    - gfxinfo : doesn't work on web apps. Use of systrace confirms it. We need another way to measure frames on chrome. 
+        -> Chrome devtools fps : end of a frame is when another starts and only on Renderer process. Since Android frames ends with a swapping of buffers and this is done on GPU Process on Chrome, need another way to detect them
+        -> Chrome inspect tracing tool, visual representation of CDP Tracing experimental domain,  similar to Android Systrace but for web apps on Chrome. Build a model by trial and error. Now can have lots of timestamps regarding Chrome frames. How can they be compared to android frames ? Looked at systrace and the timestamps available with gfxinfo framestats. Matched the timestamps with Systrace by looking at source code
+        
+        Conclusion about what can be compared (cf weekly report 11)
+\fi
+
+This chapter will present the methods used to compare the smoothness performance of Progressive Web Apps and Mobile Applications on Android. This includes the metric used to compare the smoothness of the applications, the tools used to measure this metric and the resources used as well the experiments conducted to answer the research question.  
+
+\section{Rendering process}
+    
+    In order to compare the smoothness of progressive web applications and mobile applications, it is essential to better understand the rendering pipeline of Android and Chrome and the metrics that can be measured.
+    
+    \subsection{Android}
+    \todo[inline, color=cyan!20]{dumpsys gfxinfo framestats}
+        
+    The main source of graphical information for Android application is the service \textit{gfxinfo} available with the command line \textit{adb shell dumpsys}. This service outputs several statistics about the application's frames, such as total number of frames rendered, the percentage of janky frames, a histogram of frames duration, some memory information and even frame's timestamps with the option \textit{framestats}.
+    
+    However, this service does not work on Progressive Web Apps running on Chrome as it counts only a dozen frames for a Progressive Web App when its native counterpart renders several hundreds of frames for the same amount of time. 
+    
+    This was confirmed with a Systrace of the Progressive Web App and its Native Android counterpart (See figures \ref{fig:android_systrace} \ref{fig:pwa_systrace}).
+    \begin{figure}[!ht]
+        \includegraphics[width=15cm]{kththesis/Figures/android_systrace_frame.jpg}
+        \caption{Native App's Systrace}
+        \label{fig:android_systrace}
+        \includegraphics[width=15cm]{kththesis/Figures/android_systrace_zoom.jpg}
+        \caption{Native App's Systrace - Zoom}
+        \label{fig:android_systrace_zoom}
+    \end{figure}
+    
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=15cm]{kththesis/Figures/pwa_systrace.jpg}
+        \caption{PWA's Systrace}
+        \label{fig:pwa_systrace}
+        \includegraphics[width=15cm]{kththesis/Figures/pwa_systrace_zoom.jpg}
+        \caption{PWA's Systrace - Zoom}
+        \label{fig:pwa_systrace_zoom}
+    \end{figure}
+    
+    \paragraph{}
+    In a native Android Application, a frame is started with the function Choreographer\#doFrame and synchronously computed in the UI then the Renderer thread, until buffers are swapped inside the function eglSwapBuffersWithDamageKHR.
+    
+    Chrome on the other hand does not follow this pipeline, though Chrome's GPU process seems to use some of Android's Application Renderer's function. Choreographer\#doFrame is called on the VizCompositorThread regularly, just like in a native application. However, it does not trigger the computation of a frame like in native. This is probably why the service \textit{gfxinfo} does not detect any frames from Chrome. 
+    
+    This hypothesis was confirmed when examining Android's source code and linking the frame's timestamps as detected by \textit{dumpsys gfxinfo} and the functions displayed by Systrace (see Figure \ref{fig:android_frame_timeline}).
+    
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=13cm]{kththesis/Figures/Android_frame_timeline.png}
+        \caption{A frame's timeline on Android}
+        \label{fig:android_frame_timeline}
+    \end{figure}
+    
+    However, the main thread of the GPU Process do call eglSwapBuffersWithDamageKHR which swaps graphics buffers to SurfaceFlinger. Thus, a frame do get computed and pushed to SurfaceFlinger on Chrome, but it does not follow Android's pipeline. Therefore, Chrome's rendering pipeline needs to be studied in depth in order to extract frame's timestamps similar to those computed by Android. 
+    
+    
+    \subsection{Chrome}
+    
+    As was described in the Background chapter, Chrome contains several processes, including the Browser Process, the Renderer and the GPU Process. 
+    
+        
+        
     \subsection{Method of comparison}
-    \todo[inline, color=cyan!20]{Conclusions on how to compare both pipelines: a) definition of a frame b) benchmark apps used}
-\section{Comparing CPU and Memory}
-    \subsection{Android and Chrome tools}
-    \todo[inline, color=cyan!20]{Describe available tools on Android and Chrome}
-    \todo[inline]{Move to Background}
-    \subsection{Evaluating Chrome tools}
-    \todo[inline, color=cyan!20]{Describe Experiments used to compare Android and Chrome tools, and their results}
-    \subsection{Evaluating Emulators}
-    \todo[inline, color=cyan!20]{Explain why Emulators are no good for evaluating CPU and Memory}
+        \todo[inline, color=cyan!20]{Conclusion}
+\section{Memory}
+    \todo[inline, color=cyan!20]{This section might be a little empty, but better to have CPU with a section on its own}
+    \subsection{Android}
+    \subsection{Chrome}
+\section{CPU}
+    \subsection{Android}
+        \todo[inline, color=cyan!20]{present cpuinfo and top}
+    \subsection{Chrome}
+        \todo[inline, color=cyan!20]{CPU of Chrome devtools not good}
+\section{Experiments}
+    \subsection{Devices}
+        \todo[inline, color=cyan!20]{Justify why not use emulators}
+    \subsection{Benchmark applications and protocol}
+        \todo[inline, color=cyan!20]{Present experiments}
 
 We will focus on the fluidity of the apps that can be defined with Frame Per Second (FPS) rate.
 Thus, we will compare the FPS rate of a Native Android Application and a Progressive Web App, as well as with a benchmark consisting of : 
@@ -472,7 +597,7 @@ Unfortunetaly, as it is an experimental domain, it can be removed at any time. I
 
 Finally, I have downloaded and looked at Chrome Devtools source code in order to understand how they compute the cpuTime and frames from the raw events.
 \paragraph{Week 4}
-I have looked at Chrome Devtools source code, copied and adapted the necessary class and functions in order to retrive the same models computed by Chrome devtools. The scripts (extractFromTrace/extractData.js) are on the Git repository. I can now compute the FPS, CPU\%, and Memory usage from the trace just like I do on Chrome devtools.
+I have looked at Chrome Devtools source code, copied and adapted the necessary class and functions in order to retrieve the same models computed by Chrome devtools. The scripts (extractFromTrace/extractData.js) are on the Git repository. I can now compute the FPS, CPU\%, and Memory usage from the trace just like I do on Chrome devtools.
 
 However, I noticed on the PWA's traces attained by Chrome remote debugging that there is no cpuTime value (from which I usually extract the CPU usage), but Chrome Devtools do show a CPU usage graph. To be clear, this is just for traces done by Chrome Devtools in remote debugging mode. The traces attained from a PWA by the python scripts are complete and can be processed into CPU times. However, there might be some other things to take into account aside from the CPU time, so I will look more into Chrome Devtools source code to find out.
 
@@ -482,7 +607,7 @@ CDP' SystemInfo.getProcessInfo could get us the cpuTime of each process since ru
 How they draw the CPU Overview graph on Chrome Timeline (from what I understood)
    They consider a small time interval of the recording which represents, let's say, 4px on the screen. The cpu usage is represented vertically by the cpu time used during this interval. So for example, 100\% cpu usage during this interval would be represented by a square of 4px by 4px. 50\% by a rectangle 2px high, etc.  For each event running during this time interval (its start and/or end time is between the start and end time of the time interval), the time the event spent inside that interval is added to the rectangle. So an event running 50\% of the time interval would add 2px to the height of the rectangle and so on for each event. 
 
-Thus, the CPU Overview graph isn't a true representation of the CPU usage as it doesn't take into account functions waiting for something, juste the start and end time of events. 
+Thus, the CPU Overview graph isn't a true representation of the CPU usage as it doesn't take into account functions waiting for something, just the start and end time of events. 
 
 How and why they compute the CPU time of frames
     How you might have guessed from the previous explanation, the cpuTime computed for the frames isn't used at all to draw the CPU Overview. It is for the user to have an idea of how much time is spent in the frame processing instructions (at least instruction events). It is roughly the selfTime sum of events from the main and compositor threads. 
@@ -552,7 +677,7 @@ I am pretty confident in my model but I still have to test it with scrolling.
 There is also another problem. In some of the manual clicks traces (traces 3, 4, 6 and 8), some basic frames are computed from the Browser main thread instead of the Renderer process/Compositor thread and then linked to every following SurfaceAggregation events, resulting in a a snowball of errors in my script. As a web app is only run inside a Renderer process for security, I suspect this browser frame is actually the small window that sometimes pop-up on top of the app asking if I want it translated, though I don't really remember it from the experiments. I will try to reproduce this examine it further.
 
 \paragraph{Week 12/13}
-The following model was build from several experiments from my PWA benchmark app with diffferent user interactions (automatic clicking every 20, 100, 300, 500, 1000ms, manual clicking, refresh, nothing) and scrolling from another PWA (https://pwa.rocks/). I intend to do more experiments from other PWAs to further validate my model and not have any surprise later in the thesis.
+The following model was build from several experiments from my PWA benchmark app with different user interactions (automatic clicking every 20, 100, 300, 500, 1000ms, manual clicking, refresh, nothing) and scrolling from another PWA (https://pwa.rocks/). I intend to do more experiments from other PWAs to further validate my model and not have any surprise later in the thesis.
 
 
 \includegraphics[width=13cm]{kththesis/Chrome_Graphics_v2.png}
