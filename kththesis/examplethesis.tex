@@ -170,6 +170,9 @@ Lighthouse \cite{lighthouse} is another tool of Chrome DevTools, available in th
 \paragraph{}
 Chrome DevTools Protocol \cite{CDP} is a set of commands and events used to communicate with the browser and the web page. Chrome DevTools takes its source of information from it. A number of other tools relies on it for their features \cite{awesome_CDP}. It may be used for browsers other than Chrome if they are based on Blink.
 
+\paragraph{}
+Telemetry \cite{telemetry} is a framework used for automated performance testing on Chrome. It can be used on several platforms (desktop or Android). It can automatically interact with a web page while taking measurements. 
+
 
 
 \section{Rendering Pipeline}
@@ -347,28 +350,17 @@ Lastly, only two research papers examined the user experience offered by Progres
 Though some security issues needs to be resolved \cite{Pride_Prejudice}, Progressive Web Apps have the potential to become a popular cross-platform solution for developing mobile applications. They don't add much complexity to a regular web app \cite{JohannsenFabian2018PWAa}, greatly reducing the cost of developing a mobile application for every platform, and have similar performance than mobile applications regarding launch time \cite{PWApossibleUnifer}\cite{Biorn-Hansen2} \cite{PWAapplicability}, energy consumption \cite{PWAapplicability}, user experience \cite{emulating_native_w_crossplatform}\cite{PWA_UX_comparison_study}, or even hardware access in some cases \cite{PWAbc_responsetime}. 
 \paragraph{}
 
-However, at the time of writing no study was found that examined the User Interface performance at runtime. The User Interface performance can be divided into 2 main factors : the responsiveness i.e. how fast the app can respond to user input, and the animation performance i.e. how well the transitions between 2 states are made (for example the animations when navigating, clicking a button, scrolling, changing content).
+However, at the time of writing no study was found that examined the User Interface performance at run-time. The User Interface performance can be divided into 2 main factors : the responsiveness i.e. how fast the app can respond to user input, and the animation performance i.e. how well the transitions between 2 states are made (for example the animations when navigating, clicking a button, scrolling, changing content) which we will refer to as smoothness. This project will focus on studying the smoothness performance of mobile and progressive web apps.
 
+The smoothness of a video is usually evaluated using the FPS rate, or frames per second \cite{smooth_gui}. It is also one of the main metrics recommended by Android\footnote{https://developer.android.com/training/testing/performance} and Google\footnote{https://developers.google.com/web/tools/chrome-devtools/evaluate-performance} to analyze the run-time performance of an application.\newline
+However, this metric is not always considered relevant. Biørn-Hansen et al. \cite{animation_performance} examined several metrics used to evaluate animation performance in mobile application. They concluded that FPS was not a really useful information, especially for animations that runs only shortly and leave the application idle the rest of the time. Lin et al. prefered to 
+analyze the smoothness performance with jank, i.e. the number of non-updated screens displayed. Wen \cite{smoothnessQoE} instead considered 6 different indexes related to the frame intervals instead of the frame time. 
 
+As there is no real consensus on the metrics to use to analyze smoothness performance,  the first part of this study will focus on finding a relevant and measurable metric to compare the smoothness of android applications and progressive web apps.
 
-
-However, at the time of writing no study was found that examined the rendering performance of Progressive Web Apps. While it is important for the user that the app launches quickly \cite{launch_time}, it is also important that the app remains smooth during the time of use. \newline
-Thus, this paper will try to address this issue and study the smoothness of mobile applications and progressive web apps.
-
-Most of the time, the smoothness of an application is associated with its responsiveness i.e. how quickly it can respond to user input.
-
-As defined by nanana, "the principle of smoothness states that objects must change in a continuous fashion, which reduces cognitive load by removing large and unexpected changes in visual information presented to the user". In other words, a smooth animation changes frames and with little changes between them 
-
-In this work, the smoothness of an application is defined as how quickly it can change the display
-
-\paragraph{}
-The smoothness of a mobile application is usually evaluated using the frame rate, or FPS for frame rate per second \cite{smoothnessQoE} \todo[inline]{It would be good to clarify what is smoothness and fluidness}. Though as Biørn-Hansen et al. pointed out while studying animation performance in mobile applications, the FPS metric does not give much insight about the fluidness of a user interface where animations run only during a short amount of time and the remaining time is spent idle waiting for new inputs.
-\newline
-Thus, this paper will analyze the smoothness performance of the applications by looking at the average frame duration, as well as CPU and memory used to compare the resources used. 
 
 \todo[inline]{Try to extend this subsection. You can emphasize that there is no documentation to create smoothness research, since your model inferring was empirical.}
-
-
+\todo[inline, color=cyan!20]{Done. (I think)}
 
 
 \paragraph{}
@@ -399,11 +391,11 @@ Do android tools work on PWA? (after all, there is a webAPK installed when insta
 
 This chapter will present the methods used to compare the smoothness performance of Progressive Web Apps and Mobile Applications on Android. This includes the metric used to compare the smoothness of the applications, the tools used to measure this metric and the resources used as well the experiments conducted to answer the research question.  
 
-\section{Rendering process}
+\section{Smoothness metrics}
     
     In order to compare the smoothness of progressive web applications and mobile applications, it is essential to better understand the rendering pipeline of Android and Chrome and the metrics that can be measured.
     
-    \subsection{Android}
+    \subsection{Android tools}
     \todo[inline, color=cyan!20]{dumpsys gfxinfo framestats}
         
     The main source of graphical information for Android application is the service \textit{gfxinfo} available with the command line \textit{adb shell dumpsys}. This service outputs several statistics about the application's frames, such as total number of frames rendered, the percentage of janky frames, a histogram of frames duration, some memory information and even frame's timestamps with the option \textit{framestats}.
@@ -431,11 +423,11 @@ This chapter will present the methods used to compare the smoothness performance
     \end{figure}
     
     \paragraph{}
-    In a native Android Application, a frame is started with the function Choreographer\#doFrame and synchronously computed in the UI then the Renderer thread, until buffers are swapped inside the function eglSwapBuffersWithDamageKHR.
+    In a native Android Application, a frame is started with the function Choreographer\#doFrame and synchronously computed in the UI then the Renderer thread, until buffers are swapped inside the function eglSwapBuffersWithDamageKHR (see Figure \ref{fig:android_systrace_zoom}).
     
-    Chrome on the other hand does not follow this pipeline, though Chrome's GPU process seems to use some of Android's Application Renderer's function. Choreographer\#doFrame is called on the VizCompositorThread regularly, just like in a native application. However, it does not trigger the computation of a frame like in native. This is probably why the service \textit{gfxinfo} does not detect any frames from Chrome. 
+    Chrome on the other hand does not follow this pipeline, though Chrome's GPU process seems to use some of Android's Application Renderer's function (see \ref{fig:pwa_systrace_zoom}. Choreographer\#doFrame is called on the VizCompositorThread after every VSYNC, just like in a native application. However, it does not trigger the computation of a frame like in native. This is probably why the service \textit{gfxinfo} does not detect any frames from Chrome. 
     
-    This hypothesis was confirmed when examining Android's source code and linking the frame's timestamps as detected by \textit{dumpsys gfxinfo} and the functions displayed by Systrace (see Figure \ref{fig:android_frame_timeline}).
+    This hypothesis was confirmed when examining Android's source code\footnote{TODO: Source code link} and linking the frame's timestamps as detected by \textit{dumpsys gfxinfo} and the functions displayed by Systrace (see Figure \ref{fig:android_frame_timeline}).
     
     \begin{figure}[!ht]
         \centering
@@ -447,9 +439,151 @@ This chapter will present the methods used to compare the smoothness performance
     However, the main thread of the GPU Process do call eglSwapBuffersWithDamageKHR which swaps graphics buffers to SurfaceFlinger. Thus, a frame do get computed and pushed to SurfaceFlinger on Chrome, but it does not follow Android's pipeline. Therefore, Chrome's rendering pipeline needs to be studied in depth in order to extract frame's timestamps similar to those computed by Android. 
     
     
-    \subsection{Chrome}
+    \subsection{Chrome's Rendering Pipeline}
     
-    As was described in the Background chapter, Chrome contains several processes, including the Browser Process, the Renderer and the GPU Process. 
+ Chrome Devtools performance panel provides an overview of a webpage's frames. It can display the frames rendered in a timeline, with its duration and CPU time. However, upon looking at its source code \footnote{Source code: TODO insert} it seems a frame starts with an event 'BeginFrame' and ends either because it is drawn (event 'DrawFrame') or because another starts (another 'BeginFrame'). This definition of a frame is too broad to compare them with Android frames. Moreover, Chrome Devtools does not consider events from the GPU Process at all when computing frames though they are finished there.
+ \paragraph{}
+ Telemetry can also measure metrics specific to rendering \footnote{see rendering Benchmarks: https://chromium.googlesource.com/chromium/src/+/master/docs/speed/benchmark/harnesses/rendering.md} such as frame times, percentage smothness or ui frame times. However, upon closer inspection of those metrics\footnote{https://source.chromium.org/chromium/chromium/src/+/master:third_party/catapult/tracing/tracing/metrics/rendering/frame_time.html}, it occurs the frame times are also defined as the time span between buffers swaps. Thus, Telemetry cannot be used either.
+ 
+ \paragraph{}
+ Hence, a more detailed rendering pipeline is needed in order to detect exactly when a frame starts and is pushed to SurfaceFlinger.
+ 
+ \paragraph{}
+ To that end, we used the Chrome tracing tool\footnote{Available at chrome://tracing on Chrome browser}, really similar to Android Systrace but for Chrome web pages. They are indeed both developed by Google and have the same interface. This tracing tool can display a lot of events called by Chrome processes, divided into categories of events (over 200 categories). Thankfully, some of these categories are gathered into groups like 'Frame viewer', 'Input Latency' or 'Frame Viewer' for an easier start. \newline
+ The first trace recorded events from the 'UI Rendering' group. Since the buffers swap is done on the main thread of the GPU Process, and that this buffer swap requires the graphic library EGL\todo[color=cyan!20]{Do I present it in the background then ?} (the function swapping the buffer on Android is called eglSwapBuffersWithDamageKHR after all), the corresponding function on Chrome was identified as 'NativeViewGLSurfaceEGL:RealSwapBuffers (see Figure \ref{fig:gpu_process}).
+ 
+ \begin{figure}[!ht]
+     \centering
+     \includegraphics[width=13cm]{kththesis/Figures/trace_gpu_process.JPG}
+     \caption{Chrome Trace - GPU Process}
+     \label{fig:gpu_process}
+ \end{figure}
+ 
+\paragraph{}
+Nevertheless, the events triggering this buffer swap still remain unknown. Only one documentation was found that explained partially how to visualize frames on Chrome Tracing tool \footnote{https://www.chromium.org/developers/how-tos/trace-event-profiling-tool/using-frameviewer}. However, it seems to be out-dated as the functions did not all have the same name and the pipeline presented was not entirely consistent with the current traces. 
+
+Thus, a model of Chrome's frames pipeline was built empirically, by playing with the event categories and by trial-and-error. To automate tracing, the Chrome Devtools Protocol
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
     
         
         
@@ -469,12 +603,14 @@ This chapter will present the methods used to compare the smoothness performance
         \todo[inline, color=cyan!20]{Justify why not use emulators}
     \subsection{Benchmark applications and protocol}
         \todo[inline, color=cyan!20]{Present experiments}
-
+\iffalse
 We will focus on the fluidity of the apps that can be defined with Frame Per Second (FPS) rate.
 Thus, we will compare the FPS rate of a Native Android Application and a Progressive Web App, as well as with a benchmark consisting of : 
     - an app displaying different image/texts every 16/17ms
     - an app with more effort on the CPU : modification of the same pictures/texts or new pictures/texts generated randomly.
+
 \newline
+\fi
 
 We will measure FPS, CPU and Memory usage to see the impact of CPU and Memory usage in the fluidity of the app.
 \newline

@@ -144,6 +144,22 @@ As stated above, Android applications and Web Applications on Chrome share two c
 
 Thus, this paper will analyze smoothness performance of the applications by looking at the average frame duration, as well as CPU and memory used to compare the resources used. 
 
+\iffalse
+However, at the time of writing no study was found that examined the rendering performance of Progressive Web Apps. While it is important for the user that the app launches quickly \cite{launch_time}, it is also important that the app remains smooth during the time of use. \newline
+Thus, this paper will try to address this issue and study the smoothness of mobile applications and progressive web apps.
+
+Most of the time, the smoothness of an application is associated with its responsiveness i.e. how quickly it can respond to user input.
+
+As defined by nanana, "the principle of smoothness states that objects must change in a continuous fashion, which reduces cognitive load by removing large and unexpected changes in visual information presented to the user". In other words, a smooth animation changes frames and with little changes between them 
+
+In this work, the smoothness of an application is defined as how quickly it can change the display
+
+\paragraph{}
+The smoothness of a mobile application is usually evaluated using the frame rate, or FPS for frame rate per second \cite{smoothnessQoE} \todo[inline]{It would be good to clarify what is smoothness and fluidness}. Though as Biørn-Hansen et al. pointed out while studying animation performance in mobile applications, the FPS metric does not give much insight about the fluidness of a user interface where animations run only during a short amount of time and the remaining time is spent idle waiting for new inputs.
+\newline
+Thus, this paper will analyze the smoothness performance of the applications by looking at the average frame duration, as well as CPU and memory used to compare the resources used. 
+\fi
+
 \chapter{Methodology}
 \section{Comparing the Rendering Process}
    
@@ -162,6 +178,7 @@ Thus, this paper will analyze smoothness performance of the applications by look
     
     \subsection{Chrome's pipeline}
     \todo[inline, color=cyan!20]{Describe Chrome's pipeline model and how I came up with it}
+       As was described in the Background chapter, Chrome contains several processes, including the Browser Process, the Renderer and the GPU Process.
     \subsection{Method of comparison}
     \todo[inline, color=cyan!20]{Conclusions on how to compare both pipelines: a) definition of a frame b) benchmark apps used}
 \section{Comparing CPU and Memory}
