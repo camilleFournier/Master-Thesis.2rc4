@@ -179,8 +179,48 @@ Thus, this paper will analyze the smoothness performance of the applications by 
     \subsection{Chrome's pipeline}
     \todo[inline, color=cyan!20]{Describe Chrome's pipeline model and how I came up with it}
        As was described in the Background chapter, Chrome contains several processes, including the Browser Process, the Renderer and the GPU Process.
+       
+       To automate tracing, the Chrome Devtools Protocol was used. Its experimental domain 'Tracing' allows to record the same events as Chrome's Tracing tool. This enable the automation of both tracing and event processing to extract a model. \newline
+The resulting model is presented in Figure \ref{fig:chrome_graphics_simple}. For a more detailed version with all the events tracked to know if a frame is truly rendered, see Annex \ref{?}.
+
+\item The VizCompositorThread, probably because of a VSYNC event that happened previously, asks for a new frame to the Renderer process with the event 'IssueBeginframe' which contains a bind\_id.
+    \item The Compositor thread of the Renderer process discard or accept it with the event 'ReceiveBeginFrame' which contains the same bind\_id. This event also call 'Scheduler::BeginFrame' which contains a sequence\_number necessary to follow the frame afterwards.
+    \item The Compositor may ask a new main frame, and schedules the next step depending on the urgency of the frame with the event Scheduler::BeginImplFrame containing the same sequence\_number. The event asking for a new main frame contains a begin\_frame\_id useful to follow the frame in the thread CrRendererMain.
+    \item If a new main frame was asked, it is compiled in CrRendererMain. The pipeline stages Styling, Layout, Compositing, pre-Painting and Painting are computed here if necessary.
+    \item If a new main frame was committed by CrRendererMain, Tiling and Raster may be computed by the Compositor and other threads if necessary. Then, it is activated: the new main frame replaces the old one in the Compositor.
+    \item The deadline of the scheduler is up: Scheduler::OnBeginImplFrameDeadline is called with the same sequence\_number as the beginning. This event itself calls several other events : GenerateRenderPass, GenerateCompositorFrame and SendCompositorFrame containing a bind\_id and LayerTreeHost::PrepareToDraw containing a SourceFrameNumber referencing the main frame used for this frame. SendCompositorFrame is not always detected but is an important event to track.
+    \item The VizCompositorThread receives the CompositorFrame from the Renderer, and maybe wait for more. It then aggregates the surfaces ie the CompositorFrames into a single frame. It also assigns a put\_offset to the frame. It is not an id per say as it is not unique but the reuse of numbers are spaced enough to use it as IDs.
+    \item The main thread of the GPU receives the frame and swap buffers for SurfaceFlinger. Since it is 
+    
     \subsection{Method of comparison}
     \todo[inline, color=cyan!20]{Conclusions on how to compare both pipelines: a) definition of a frame b) benchmark apps used}
+    
+    \iffalse
+
+A Main Frame starts to compute the frame at \textit{BeginMainFrame} timestamp. A Basic Frame which re-uses a previous main frame only starts computing at the beginning of 'ProxyImpl::ScheduleActionDraw' event. 
+
+    To summarize, on one hand Android's pipeline is pretty straightforward and easy to follow : the OS sends VSync signals that depends on the device refresh rate, asking everything on the foreground to render a frame. In response, the UI thread calls Choreographer\#doFrame which handles callbacks for input and animation before doing some sizing and layout. The Choreographer then hands what it computed to the RenderThread which issues the draw commands and swap the buffers for SurfaceFlinger.
+
+
+On the other hand, Chrome's pipeline is much less consistent and depends on a lot of parameters. We know that the VizCompositorThread also calls the Choreographer almost at each Vsync though it stops after the animation callbacks. As it is also the thread emitting 'IssueBeginFrame' events, those events are most likely linked, though I don't know when this IssueBeginFrame event is emitted compared to the Choreographer.
+
+Thus, it is meaningless to compare Chrome's frames with Android's from the start of Choreographer or the start of Vsync.
+
+Another point against doing this is the the input events. Those are always handled on Android inside the Choreographer, just before computing the frame. On Chrome, however, they are handled asynchronously and thus an input can affect a frame currently being drawn or start a new one.
+
+This leaves us with comparing the amount of time they spent on computing the frame. For Android, it starts with traversal, and can be accessed with the PerformTraversalStart timestamp. For Chrome, it is a little more complicated as a 'frame' for Android, that is a graphical buffer swapped for SurfaceFlinger, consists of several frames computed in parallel and combined on Chrome's Pipeline. \newline
+
+As a Browser frame on PWA represents things usually handled by the application on Android like the scrollbar or refresh animation, and it also leads to a BufferSwap, 
+For a 'Main frame', the computation starts with the \textit{BeginMainFrame} timestamp. For a 'Basic frame' which uses an old main frame as a baseline, it starts with the event 'ProxyImpl::ScheduleActionDraw'. 
+
+For a Basic frame which reuse a Main frame already drawn, I believe the computation starts inside ProxyImpl::ScheduleActionDraw. For a basic frame with a new Main frame, it should start at 'BeginMainThreadFrame' event. 
+
+As a Buffer swap consists of both a Basic frame and a Browser frame, and a Browser frame can trigger a Buffer swap by itself, the question is do we count them as part of the PWA's frame or not. If, as I suppose, the Browser frame displays things like the scrollbar, I believe we should count them as a PWA's frame as these displays are usually handled by the app on Android. 
+
+Thus, the most meaningful comparison, in my opinion, is the time between the timestamps PerformTraversalStart->FrameCompleted on Android and PrepareToDraw/BeginMainThreadFrame(if new main frame)->FrameCompleted of the Compositor frame of the Browser frame on Chrome (depending which took longest for the corresponding Buffer swap).
+
+\fi
+    
 \section{Comparing CPU and Memory}
     \subsection{Android and Chrome tools}
     \todo[inline, color=cyan!20]{Describe available tools on Android and Chrome}
@@ -189,7 +229,23 @@ Thus, this paper will analyze the smoothness performance of the applications by 
     \todo[inline, color=cyan!20]{Describe Experiments used to compare Android and Chrome tools, and their results}
     \subsection{Evaluating Emulators}
     \todo[inline, color=cyan!20]{Explain why Emulators are no good for evaluating CPU and Memory}
+\section{benchmark and protocol}
 
+\iffalse
+The smoothness metric defined previously depends in Progressive Web Apps on the rendering path taken by the frame. Thus, the benchmark application will have 2 features : one favouring Main Frames and the other favouring Basic Frames. The easiest way to trigger a Main Frame is to change the content of the screen. This can be done with a single click. A Basic Frame is basely triggered  
+\fi
+\subsection{script implementation}
+\iffalse
+We will focus on the fluidity of the apps that can be defined with Frame Per Second (FPS) rate.
+Thus, we will compare the FPS rate of a Native Android Application and a Progressive Web App, as well as with a benchmark consisting of : 
+    - an app displaying different image/texts every 16/17ms
+    - an app with more effort on the CPU : modification of the same pictures/texts or new pictures/texts generated randomly.
+
+\newline
+\fi
+
+We will measure FPS, CPU and Memory usage to see the impact of CPU and Memory usage in the fluidity of the app.
+\newline
 We will focus on the fluidity of the apps that can be defined with Frame Per Second (FPS) rate.
 Thus, we will compare the FPS rate of a Native Android Application and a Progressive Web App, as well as with a benchmark consisting of : 
     - an app displaying different image/texts every 16/17ms
