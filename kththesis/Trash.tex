@@ -59,10 +59,36 @@ Which can be divided into the following sub-questions:
 \end{enumerate}
 
 \chapter{Background}
+%This chapter introduces the terminology and concepts used this study, as well as previous research done on Progressive Web Apps and available tools to measure Android apps and PWA's performance. 
+
 \section{Mobile Applications}
 \subsection{Development}
 
 React Native, Ionic and PhoneGap are one of the most popular frameworks used today \cite{CrossPlatform_study}.
+
+%The smoothness performance can refer to the result display on the screen, and its efficiency in resource consumption. the research question will be divided into the following sub-questions:
+
+
+%\paragraph{R2:}
+%With the metrics identified previously, are Progressive Web Apps as smooth as Mobile Applications?
+%\paragraph{R3:}
+%How much resources are used to render a smooth application?
+%\begin{enumerate}
+  %  \item How can we compare the smoothness of Progressive Web Apps and Mobile Applications?
+ %   \item With the metrics identified previously, are Progressive Web Apps as smooth as Mobile Applications?
+%    \item How much resources are used to render a smooth application?
+%\end{enumerate}
+
+
+%\section{Limitations}
+
+%\todo[inline]{Maybe is a good idea to move to the conclusion}
+
+%Every research paper comes with its limitation, and this work is no exception. 
+%At the time of writing, Progressive Web Apps are not fully supported on iOS \cite{BackgroundSync_support} \cite{Manifest_support}. Thus, this work will focus on comparing PWA and traditional mobile applications only on Android. 
+%Moreover, according to Statcounter \cite{Browser_data} which compiles data from more than 10 billion page views per month, the browser used the most on mobile is Google Chrome with more than 60\% usage followed by Safari with 26\% and other browsers at less than 10\%. 
+%Considering the overwhelming usage of Google Chrome on Android devices, this paper will focus on PWA's performance with Google Chrome. 
+
 
 \section{Progressive Web Apps}
 \subsection{Academic research}
@@ -96,6 +122,26 @@ Since June 2019, more than half of Web traffic comes from mobile devices. \cite{
     \cite{PWADatabase} compare performance of same app developed multiple times with different parameters (framework, service-worker, optimization, etc)
     
     \cite{PWAapplicability} compared the same app developed 4 times : a) as a native iOS, b) a native Android, c) a web app and d) a pwa in regards to First Paint and Energy consumption. Regarding the First Paint metric, the PWA performed better against the web app and the native Android app. The difference with iOS might be because of the incomplete support of PWA on iOS. As for energy consumption, PWA seemed to consume less energy, but the number of experiments was not enough to really confirm that.
+    
+    \iffalse
+\paragraph{}
+When studying performance, a large portion of the researched papers focused on the app start-up times. They measured either the total launch time\cite{YbergViktor2018NPaU} \cite{PWApossibleUnifer} \cite{Biorn-Hansen2}, the time from app-icon to toolbar render \cite{PWApossibleUnifer} \cite{Biorn-Hansen2}, the first paint \cite{bac_pwa_comparison} \cite{bac_pwa_performance} \cite{PWAapplicability} or other metrics related to start up \cite{bac_pwa_performance} \cite{bac_pwa_comparison}.
+Their results showed that the launch time was faster for a PWA than a mobile app when the browser was already in memory. The app icon from toolbar render as well as the first paint metrics also showed that PWA was one of the fastest among the apps tested.\newline
+Only one study concluded that PWA was slower than a regular web app because of the HTTPS requests \cite{bac_pwa_comparison}. However, the comparison was made between a PWA served over HTTPS and a regular web app served between HTTP. Another study \cite{bac_pwa_performance} which also compared a regular web app and a PWA First Paint time did not find such results. 
+
+\paragraph{}
+Two research papers also investigated the energy consumption of PWA, though from a different angle. Malavolta et al.\cite{SW_and_energy} focused on the impact of service workers on PWA's energy consumption and found no significant impact. Kerssens \cite{PWAapplicability} on the other hand measured the average energy consumption when running the app and found PWA consumes slightly less than its native counterpart. 
+
+\paragraph{}
+Fransson and Driaguine \cite{PWAbc_responsetime} compared the response time of PWAs and Native Android Applications when accessing the camera en geolocation. The Progressive Webb App was surprisingly faster at using geolocation than its native counterpart. However, the camera was accessed faster from the native app than the PWA.
+
+\paragraph{}
+Lee et al. \cite{Pride_Prejudice} explored the security system behind the push notification system for Progressive Web Apps and found several concerning flaws which they reported to the vendors. 
+
+\paragraph{}
+Lastly, only two research papers examined the user experience offered by Progressive Web Apps. Cardieri and Zaina \cite{PWA_UX_comparison_study} conducted a qualitative analysis of user experience on three platforms: web mobile, native android and PWA. They concluded that there was no significant difference of user experience between the platforms. Fredrikson \cite{emulating_native_w_crossplatform} also supports this conclusion with a quantitative and a qualitative study comparing user experience with a React Native App, a Native Android App and a Progressive Web App. 
+\fi
+
 
 \section{Profiling tools}
 
@@ -200,6 +246,143 @@ Do android tools work on PWA? (after all, there is a webAPK installed when insta
         
         Conclusion about what can be compared (cf weekly report 11)
 \fi
+\section{Smoothness metric}
+ \iffalse
+    In order to compare the smoothness of progressive web applications and mobile applications, it is essential to better understand the rendering pipeline of Android and Chrome and the metrics that can be measured and inferred.
+    \fi
+     The reasons for the remaining errors are: 
+    
+    \begin{itemize}
+        \item \textbf{Edge effects}: the start and end of a recording can happen anywhere on a frame's timeline. Some events, which require previous events or child events according to the model can raise an error at the start or end of recording. Those errors are kept to a minimum, but can still happen as the recording does not always start or end at the same time for all threads.
+        \item \textbf{Embedded iframes or videos}: as will be explained in more details later, every frame rendered is actually composed of aggregated surfaces. Each iframe or video adds a surface and complicates the model, making it more difficult to follow the frames. As this project is limited to simple apps with no videos or third-party advertisement, those errors are ignored. 
+    \end{itemize}
+    
+    However, this service does not work on Progressive Web Apps running on Chrome as it counts only a dozen frames for a Progressive Web App when its native counterpart renders several hundreds of frames for the same amount of time with no visible jank. 
+    
+    \todo[inline]{It is a good practice to always write references as autoref commands. TODO, replace all ref by autorefs}
+    
+    The previous hypothesis was confirmed with a Systrace of the Progressive Web App and its Native Android counterpart (See  \autoref{fig:android_systrace} and \autoref{fig:pwa_systrace}).
+    \begin{figure}[!ht]
+        \includegraphics[width=15cm]{kththesis/Figures/android_systrace_frame.jpg}
+        \caption{Native App's Systrace}
+        \label{fig:android_systrace}
+        \includegraphics[width=15cm]{kththesis/Figures/android_systrace_zoom.jpg}
+        \caption{Native App's Systrace - Zoom}
+        \label{fig:android_systrace_zoom}
+    \end{figure}
+    
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=15cm]{kththesis/Figures/pwa_systrace.jpg}
+        \caption{PWA's Systrace}
+        \label{fig:pwa_systrace}
+        \includegraphics[width=15cm]{kththesis/Figures/pwa_systrace_zoom.jpg}
+        \caption{PWA's Systrace - Zoom}
+        \label{fig:pwa_systrace_zoom}
+    \end{figure}
+    
+    \paragraph{}
+    In a mobile Android Application, a frame is started with the function horeographer\#doFrame and synchronously computed in the UI then the Renderer thread, until buffers are swapped inside the function eglSwapBuffersWithDamageKHR (see \autoref{fig:android_systrace_zoom}).
+    
+    Chrome on the other hand does not follow this pipeline, though Chrome's GPU process uses some \todo{seems to use some...is a little bit vague, can we claim this as a ground truth?} of Android's Application Renderer's function (see \autoref{fig:pwa_systrace_zoom}). Choreographer\#doFrame is called on the VizCompositorThread after every VSYNC, just like in a native application. However, it does not trigger the computation of a frame like in native. This is \todo{vague...You wrote that you empirically demonstrated it, so it is a fact} why the service \textit{gfxinfo} does not detect any frames from Chrome. 
+    
+    Examining Android's source code\footnote{TODO: Source code link} and linking the frame's timestamps as detected by \textit{dumpsys gfxinfo} and the functions displayed by Systrace (see Figure \ref{fig:android_frame_timeline}) confirmed this.
+    
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=13cm]{kththesis/Figures/Android_frame_timeline.png}
+        \caption{Linking Systrace and frame's timestamps}
+        \subcaption{Above is the UI thread and below is the Renderer thread}
+        \label{fig:android_frame_timeline}
+    \end{figure}
+    However, the main thread of the GPU Process calls eglSwapBuffersWithDamageKHR which swaps graphics buffers to SurfaceFlinger. Thus, a frame does get computed and pushed to SurfaceFlinger on Chrome, but it does not follow Android's pipeline. Therefore, Chrome's rendering pipeline needs to be studied in depth in order to extract frame's timestamps similar to those computed by Android. 
+    
+    
+    \todo[inline]{I think this can be moved to conclusions, adding here then a reference to it. }
+    
+    \todo[inline]{Here you should add a conclusion for 3.1.1. What was the problem and how you solved it.}
+
+Chrome also has several tools available to evaluate the smoothness of a web application. One of them is Chrome Devtools performance panel which provides an overview of the frames rendered during a recording. However, an inspection of its source code\footnote{Source code: TODO insert} revealed that it computes the end of a frame as the start of another one. This is too broad of a definition to compare them to Android frames. \newline
+The other tool available is Telemetry, a performance testing tool with specific rendering metrics
+
+ Chrome Devtools performance panel provides an overview of a webpage's frames. It can display the frames rendered in a timeline, with its duration and CPU time. However, upon looking at its source code \footnote{Source code: TODO insert} it turns out a frame starts with an event 'BeginFrame' and ends either because it is drawn (event 'DrawFrame') or because another starts (another 'BeginFrame'). This definition of a frame is too broad to compare them with Android frames. Moreover, Chrome Devtools does not consider events from the GPU Process at all when computing frames though they are completed there.
+ \todo[inline, color=cyan!20]{REWRITE IT IT IS CRAP}
+ \paragraph{}
+ Telemetry can also measure metrics specific to rendering\footnote{see Rendering Benchmarks: https://chromium.googlesource.com/chromium/src/+/master/docs/speed/benchmark/harnesses/rendering.md} such as frame times, percentage smoothness or ui frame times. However, upon closer inspection of those metrics\footnote{https://source.chromium.org/chromium/chromium/src/+/master:third_party/catapult/tracing/tracing/metrics/rendering/frame_time.html}, it occurs the frame times are also defined as the time span between buffers swaps. Thus, Telemetry cannot be used either.
+ 
+ \paragraph{}
+ Hence, a more detailed rendering pipeline is needed in order to detect exactly when a frame starts and is pushed to SurfaceFlinger.
+ 
+ \paragraph{}
+ To that end, we used the Chrome tracing tool\footnote{Available at chrome://tracing on Chrome browser}, really similar to Android Systrace but for web pages in Chrome. They are indeed both developed by Google and have the same interface. This tracing tool can display several events called by Chrome processes, divided into categories of events (over 200 categories \citationneeded). For example, some categories are gathered into groups like 'Frame viewer', 'Input Latency' or 'Frame Viewer' for an easier start. \newline
+ The first trace recorded events from the 'UI Rendering' group. Since the buffers swap is done on the main thread of the GPU Process, and that this buffer swap requires the graphic library EGL\todo[color=cyan!20]{Do I present it in the background then ?} \todo[inline]{I think it is a better idea}
+ %(the function swapping the buffer on Android is called eglSwapBuffersWithDamageKHR after all)
+ , the corresponding function on Chrome was identified as 'NativeViewGLSurfaceEGL:RealSwapBuffers (see \autoref{fig:gpu_process}).
+ 
+ \begin{figure}[!ht]
+     \centering
+     \includegraphics[width=13cm]{kththesis/Figures/trace_gpu_process.JPG}
+     \caption{Chrome Trace - GPU Process}
+     \label{fig:gpu_process}
+ \end{figure}
+ 
+\paragraph{}
+Nevertheless, the events triggering this buffer swap still remain unknown. Only one documentation was found that explained partially how to visualize frames on Chrome Tracing tool \footnote{https://www.chromium.org/developers/how-tos/trace-event-profiling-tool/using-frameviewer}. However, it seems to be out-dated as the functions did not all have the same name and the pipeline presented was not entirely consistent with the current traces. 
+\todo[inline]{Emphasize again that this is also a contribution of this work}
+
+\todo[inline]{What do you think about creating another section here?}
+
+\todo[inline]{Somehow you are presenting the methodology and the results in the same place?}
+\color{blue}
+Thus, a model of Chrome's frames pipeline was built empirically with an iterative process. It is possible to download a trace from Chrome Tracing tool as a JSON file containing all the events recorded. With the 'Tracing' domain of Chrome Devtools Protocol, it is possible to output the same file automatically. The resulted JSON file was then processed by a script which tracked the start and end of the frames as predicted by the empirical model. If any error was raised, a visualization of the events on Chrome Tracing tool and a revision of the code allowed either to fix a bug in the code or to change the model according to the events observed. \newline
+The model was first built with the same benchmark progressive web app: a single-page application with a text changing every few milliseconds and a button which increased a number displayed at each click. It was confronted with 80 traces of 8 different PWAs. This confrontation was done 3 times, each with new PWAs until no significant errors remained. The reasons for the remaining errors were: \newline
+\textendash  edge effects: the start and end of a recording can happen anywhere on a frame's timeline. Some events, which require previous events or child events according to the model can raise an error at the start or end of recording. Those errors are kept to a minimum, but can still happen as the recording does not always start or end at the same time for all threads. \newline
+\textendash  embedded iframes or videos: as will be explained in more details later, every frame rendered is actually composed of aggregated surfaces. Each iframes or videos adds a surface and complicates the model, making it more difficult to follow the frames. As this project limits to simple apps with no videos or third-party advertisement, those errors are ignored. 
+
+The model presented in \autoref{fig:chrome_graphics_simple} represents the events tracked during a recording to extract the start and end of a frame before it is sent to SurfaceFlinger and displayed on the screen. It is possible for frames to be dropped anywhere in the pipeline so it is important to follow its step from start to finish, ideally with an id. The complete diagram with dropping events is available in \todo[color=cyan!20]{ref needed in Annnex}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=15cm]{kththesis/Figures/Chrome_graphics_simple.png}
+    \caption{Model of Chrome Graphics Pipeline}
+    \label{fig:chrome_graphics_simple}
+\end{figure}
+        
+        
+   
+        
+ \paragraph{}
+A frame in Chrome is actually a combination of at least 2 surfaces: a Browser Surface and an App Surface (see \autoref{fig:surface_diagram}). There can be more if there are embedded iframes, for example a video. However, that is outside the scope of this study, and they are not represented in this model. The browser surface represents the elements belonging solely to the browser, for instance the scrollbar or the refreshing animation in PWA (if they are not overwritten by the web app), or the address bar in other web apps. The Renderer surface represents the elements belonging to the Web App, that is everything that is not the Browser if there is no other process embedded in the application. If just one surface changes, the VizCompositor thread aggregates the surfaces displayed, the new ones and those saved in memory, sends the aggregation to the main thread of the GPU Process, CrGpuMain, which sends it to SurfaceFlinger by swapping buffers. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=13cm]{kththesis/Figures/surface_diagram.png}
+    \caption{Overview of a frame in Chrome}
+    \label{fig:surface_diagram}
+\end{figure}
+\paragraph{}
+The Renderer surface can be computed using two different paths depending on the stages skipped: the 'Main frame' and the 'Basic Frame' in the model. The 'Main frame' is the baseline of every surface of the Renderer. However, if only a small change occurs between 2 consecutive frames for example scrolling or some CSS animations, the 'Main frame' may not need to be re-computed and is used again in the current frame. This is the 'Basic frame' path. \newline
+
+\todo[inline]{Can these 7 steps being summarized in a figure also?}
+
+
+
+\paragraph{}
+To summarize, a frame timeline is as follows:
+\begin{enumerate}
+    \item The VizCompositor thread asks a new frame to the Compositor thread
+    \item The Compositor thread  agrees to compute a new frame and schedules it.
+    \item The Compositor might also ask for a new main frame. If so, the main thread of the Renderer referred to as Renderer thread compiles it. Regarding to the pipeline stages presented in the background, it computes the Styling, Layout, Compositing, Pre-Painting and Painting. When the Renderer thread is finished compiling the main frame, it commits it to the Compositor thread.
+    \item When the Compositor receives a new main frame, it computes Tiling and Raster if necessary with the help of other threads. The main frame can then be activated: it replaces the old main frame in the memory of the Compositor thread and can be used as a baseline for future frames.
+    \item Once the deadline scheduled in step 2 is up, the frame is drawn. This step is the last stage of pipeline presented previously: Drawing. The Compositor generates a ComositorFrame (cf \textit{GenerateRenderPass} and \textit{GenerateCompositorFrame}) with a main frame as a baseline and sends it to the GPU Process (cf \textit{SubmitCompositorFrame}).
+    \item The VizCompositorThread receives all necessary surfaces (cf \textit{ReceiveCompositorFrame}), aggregates them into a single frame (cf \textit{SurfaceAggregation}) and sends it to CrGpuMain thread.
+    \item Finally, CrGpuMain receives the frame and swap buffers for SurfaceFlinger (cf \textit{SwapBuffers} and \textit{FrameCompleted})
+\end{enumerate}
+
+However, the computation of a new Main Frame (step 3 and 4) is not always synchronized with the computation of a base frame. For example, due to various reasons \todo{Try to enumerate at least two reasons} CrRendererMain might be late in committing the main frame, and a new Basic Frame is rendered without it. Then, the Main Frame will be activated only for the following frame.
+
+\paragraph{}
+A browser frame follows a similar timeline. The main difference is that all work computed by the Compositor thread and CrRendererMain is done in the same in the same thread, CrBrowserMain. A Browser Frame always follow a path similar to a Main Frame.
 
 \section{Comparing the Rendering Process}
    
@@ -325,6 +508,34 @@ Thus, we will compare the FPS rate of a Native Android Application and a Progres
 We will measure FPS, CPU and Memory usage to see the impact of CPU and Memory usage in the fluidity of the app.
 \newline
 
+\subsection{Emulators}
+\iffalse
+The results presented in Table \ref{tab:memulators_test} are the average of 110 measures.
+
+\begin{table}[!ht]
+    %\centering
+    \begin{tabular}{|m{2,5cm}|m{2cm}|m{2cm}|m{2cm}||m{2cm}|m{2,5cm}|}
+        \hline
+         & \multicolumn{3}{c||}{Samsung S6 (API 7.0)} & \multicolumn{2}{|c|}{Samsung S5 (API 5.0)}  \\
+         \hline
+         Metrics & Physical device & Genymotion & Android Emulator & Physical device & Visual Studio Emulator \\
+         \hline
+         CPU Usage (\%) & 72 & 29 & 18 & 48 & 16 \\
+         \hline
+         RAM (KB) & 72 080 & 24 243 & 17 499 & 56 813 & 16 992 \\
+         \hline
+         Janky frames (\%) & 13 & 46 & 6 & 3 & 98 \\
+         \hline
+    \end{tabular}
+    \caption{Emulators Tests}
+    \label{tab:memulators_test}
+\end{table}
+
+\paragraph{}
+The results between the physical devices and the emulators are too different to be used in future experiments. Thus, only the available Android smartphones will be used for this project: Samsung S6 (7.0), Samsung S5 (5.0) and Samsung Galaxy S (4.2)
+
+\todo[inline, color=cyan!20]{I might be able to also use a Huawei (old phone with no card sim), depending on if it works and I have the time}   
+\fi
 \subsection{CPU}
 
 \todo[inline, color=cyan!20]{Remove entirely the next paragraph ?}
@@ -394,11 +605,34 @@ In Scenario 2 (\autoref{tab:text:scrolling}), the Native application is faster t
 In Scenario 3 (\autoref{tab:picture:changing}), the Hybrid application is faster on all three devices. The Progressive Web App is faster than the Native app on two devices, Samsung S5 and Huawei, but lags behind by 20\% on Samsung S6. 
 \end{document}
 
+%Apart from \ref{scenario:picture:scrolling} and \ref{scenario:text:scrolling} where the Hybrid and PWA consumes similar amount of CPU, 
+%\paragraph{}
+%A third observation is the great difference between the frame duration of the PWA and the frame duration of the other mobile applications. The PWA is often 2 or three times slower than the mobile applications. The only time the PWA is faster is when scrolling pictures (\autoref{tab:picture:changing}). Then, the PWA compute new frames in 15ms while the native applications takes 17ms. However, the Hybrid application is still faster with only 7ms to compute a new frame.  
+
+%\paragraph{}
+%Lastly, though the PWA can compute new frames faster than the Native Application in \ref{scenario:picture:changing}, it is never faster than the Hybrid application and is even around 10ms slower in Scrolling Scenarios on Samsung S5 and Huawei P9-Lite. The Hybrid application is faster than the Native application on Changing content scenarios, and only falls 2 or 3ms behind the Native application in Scrolling scenarios. 
+
+%However, the measurements for the progressive web app can be considered less accurate than the mobile applications as the browser could be performing tasks in the background unrelated to the progressive web app. The same reasoning can be applied for the memory usage. To maximize the accuracy of the results, the experiments were conducted in airplane mode without internet connection, and no other web page were opened. Nonetheless, the native application was found to be largely more efficient than the hybrid and progressive web application, both in terms of CPU and Memory usage. 
+
 \chapter{Discussion}
 
 This may be due to the size of the frameworks used for the Hybrid and PWA, while the framework used in Native application is part of the OS and not the application.
 
 However, it should be noted that the scrolling experiments were not as consistent between devices and frameworks than when changing content. The same drag event did not trigger the same scrolling speed across device and framework, and the length of the scrolling page was different. It is also difficult to simulate the same drag event with \textit{monkeyrunner} and the Input Domain of Chrome DevTools Protocol. More experiments would be needed to confirm the performance observed when scrolling. Moreover, the clocks of different threads in Chrome were found to be slightly out of sync. Thus, some events were detected before their triggering events on another thread. However, those incidents concerned events not counted in the frame duration. They were scarce and of small magnitude and thus do not invalidate the results presented previously.
+
+\todo{Each RQ as a section non in question form}
+
+\paragraph{R1: How can we compare the smoothness of Progressive Web Apps and Mobile Applications?}
+To answer this question, a model of Chrome's rendering pipeline was empirically built and compared to Android's rendering pipeline. It was found that comparing frames as defined by either Android or Chrome was irrelevant since their rendering pipeline was too different. Instead, the amount of time it takes to compute a frame and push it to SurfaceFlinger was used. \newline
+However, this metric was identified only for Progressive Web Application running on Chrome browser on Android. Other popular browsers and other OS must be studied in order to reach a real conclusion, for example the Safari browser on iOS. This metric might be used with other browsers as well, but a study of its rendering pipeline will be needed to confirm its relevance and identify when the browser starts computing a frame. This can be a suggestion for future work related to the smoothness of Progressive Web Application. 
+
+\paragraph{R2: With the metrics identified previously, are Progressive Web Applications as smooth as Mobile Applications?}
+Though the Progressive Web App was found to be faster than the Native application in some cases, it was more often the slowest out the three applications by up to a 10ms margin. The Hybrid application, which was the fastest app or the second fastest by only 2 or 3ms seems a better cross-platform solution for mobile applications. \newline
+However, it should be noted that the scrolling experiments were not as consistent between devices and frameworks than when changing content. The same drag event did not trigger the same scrolling speed across device and framework, and the length of the scrolling page was also different. Moreover, it is difficult to simulate the same drag event with \textit{monkeyrunner} and the Input Domain of Chrome DevTools Protocol. More experiments would be needed to confirm the performance observed when scrolling.
+
+\paragraph{R3: How many resources are used to render a smooth application?}
+The amount of resources used differ greatly between the frameworks. The Native application was in all scenarios the one consuming the less resources by far. The Hybrid application was slightly more efficient than the PWA for scrolling content, and slightly less efficient when changing content. Though this result might contradict the study done by Kerssens \cite{PWAapplicability}, it concurs with the results found by Ciman and Gaggi \cite{ciman2017empirical} who found that cross-platform applications consumes more energy than native applications, especially when updating User Interface elements. This may be due to the additional layer present in the Hybrid and PWA and necessary to run the application.
+\fi
 
 \chapter{Conclusion}
 
