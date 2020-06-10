@@ -1,6 +1,11 @@
 \begin{document}
 
 \chapter{Introduction}
+
+One of the biggest challenge of mobile development today resides in the high fragmentation of mobile platforms \cite{MobileDevChallenges} with developers building the same app over multiple platforms. A popular solution is cross-platform development, that is using a framework capable of using the same code for multiple platform builds. However, such cross-platform development does not concern web applications that developers still have to develop separately from mobile applications. To answer this problem, Google introduced in 2015 the concept of \textit{Progressive Web Apps} \cite{PWA_intro}, a term first coined by designer Frances Berriman and Google Chrome  developer Alex Russel \cite{PWA_blog} \cite{PWApossibleUnifer}.
+This section will introduce the concept of Progressive Web Apps and the objective of this paper.
+
+
 \section{Research questions}
 
 Due to its cross-platform capabilities, Progressive Web Apps seems like a promising alternative to native development. However, this shouldn't come at the cost of app performance and user experience, especially in regards to smoothness.
@@ -13,6 +18,20 @@ Which raises the following sub-questions:
     \item What metrics are relevant to compare the smoothness of Mobile and Progressive Web Apps?
     \item What tools are available to measure those metrics ?
 \end{enumerate}
+
+\iffalse
+Due to its cross-platform capabilities, Progressive Web Apps seems like a promising alternative to native development. However, this shouldn't come at the cost of app performance and user experience, especially in regards to smoothness.
+Thus, this paper will aim at answering the question : 
+\begin{center}
+    \textit{Are Progressive Web Apps as performant as Mobile Applications in terms of smoothness?}
+\end{center}
+Which can be divided into the sub-questions: 
+\begin{enumerate}
+    \item How can we compare the smoothness of Progressive Web Apps and Mobile Applications ?
+    \item With the metrics identified previously, are Progressive Web Apps as smooth as Mobile Applications ?
+    \item How many resources are used to render a smooth application ?
+\end{enumerate}
+\fi
 
 \iffalse
 Primary research question : 
@@ -161,6 +180,27 @@ Thus, this paper will analyze the smoothness performance of the applications by 
 \fi
 
 \chapter{Methodology}
+
+\iffalse
+Do android tools work on PWA? (after all, there is a webAPK installed when installing the PWA)?
+    - cpuinfo : 3 processes shown -> but is there any other work done by Browser besides PWA ? Is there any other way to have \%CPU for PWA and be sure it is only that?
+        -> Chrome devtools performance panel cpu graph: how do they compute it ? (amount of time spent inside functions (between start and end time) but doesn't take into account time spent waiting for results or idle -> not accurate enough
+        -> cpu time metric computed with each frame (not used for cpu graph as cputime metric isn't computed in remote debugging but still display of the graph)
+        -> CDP SystemInfo -> doesn't work actually. Similar issue filed in 2018 on CDP github repo
+        -> Chrome devtools CPU sampling (v8.profiler thing)
+        
+        => computed \%CPU as measured with dumpsys cpuinfo, cputime from chome devtools and from cpu sampling from chrome devtools on a single-core emulated device : chrome devtools methods not accurate enough compared to dumpsys -> thus use dumpsys in future experiments
+        
+        
+    - meminfo (graphics ie  memory used by graphics data buffers) : works
+    
+    - gfxinfo : doesn't work on web apps. Use of systrace confirms it. We need another way to measure frames on chrome. 
+        -> Chrome devtools fps : end of a frame is when another starts and only on Renderer process. Since Android frames ends with a swapping of buffers and this is done on GPU Process on Chrome, need another way to detect them
+        -> Chrome inspect tracing tool, visual representation of CDP Tracing experimental domain,  similar to Android Systrace but for web apps on Chrome. Build a model by trial and error. Now can have lots of timestamps regarding Chrome frames. How can they be compared to android frames ? Looked at systrace and the timestamps available with gfxinfo framestats. Matched the timestamps with Systrace by looking at source code
+        
+        Conclusion about what can be compared (cf weekly report 11)
+\fi
+
 \section{Comparing the Rendering Process}
    
     The background section presented an overview of Android's Garphics pipeline, with the Application Renderer itself divided into 7 stages : input handling, animation, measurement and layout, draw, sync and upload, issue commands, process and swap buffers. 
@@ -183,6 +223,8 @@ Thus, this paper will analyze the smoothness performance of the applications by 
        To automate tracing, the Chrome Devtools Protocol was used. Its experimental domain 'Tracing' allows to record the same events as Chrome's Tracing tool. This enable the automation of both tracing and event processing to extract a model. \newline
 The resulting model is presented in Figure \ref{fig:chrome_graphics_simple}. For a more detailed version with all the events tracked to know if a frame is truly rendered, see Annex \ref{?}.
 
+To link the empirical model to the pipeline stages presented in the background, Parsing, Styling, Layout, Compositing, Pre-painting, and Painting are all computed for a 'Main frame' in the main thread of the Renderer process CrRendererMain. Tiling and Raster are also computed for a 'Main frame' but in the Compositor thread, sometimes with the help of other threads and even the GPU Process. The last step, Drawing is executed in several steps. The Compositor thread first computes a 'CompositorFrame' from the 'Main frame' available and sends to the VizCompositorThread in the GPU Process. The VizCompositorThread wait for all necessary surfaces and aggregates them, before sending them to the main thread of the GPU Process. CrGpuMain can then swap the buffers to push the frame to SurfaceFlinger. The frame is now complete.
+
 \item The VizCompositorThread, probably because of a VSYNC event that happened previously, asks for a new frame to the Renderer process with the event 'IssueBeginframe' which contains a bind\_id.
     \item The Compositor thread of the Renderer process discard or accept it with the event 'ReceiveBeginFrame' which contains the same bind\_id. This event also call 'Scheduler::BeginFrame' which contains a sequence\_number necessary to follow the frame afterwards.
     \item The Compositor may ask a new main frame, and schedules the next step depending on the urgency of the frame with the event Scheduler::BeginImplFrame containing the same sequence\_number. The event asking for a new main frame contains a begin\_frame\_id useful to follow the frame in the thread CrRendererMain.
@@ -196,6 +238,19 @@ The resulting model is presented in Figure \ref{fig:chrome_graphics_simple}. For
     \todo[inline, color=cyan!20]{Conclusions on how to compare both pipelines: a) definition of a frame b) benchmark apps used}
     
     \iffalse
+    When a new surface is available, the VizCompositor thread combines it with the other surface and produces a new frame. The GPU main thread receives it and push it to SurfaceFlinger.
+\paragraph{}
+To summarize, a frame timeline is as follows:
+\begin{enumerate}
+    \item The \badge{VizCompositorThread} asks for a new frame to the Renderer process (cf \textit{IssueBeginFrame}).
+    \item The Compositor thread of the Renderer process agrees to compute a new frame (cf \textit{ReceiveBeginFrame}) and schedules it (cf \textit{Scheduled}).
+    \item The Compositor might also ask for a new main frame (cf \textit{SendRequestMainFrame}). If so, the main thread of the Renderer process CrRendererMain compiles it (cf \textit{BeginMainFrame}). In regards to the pipeline stages presented in the background, it computes the Styling, Layout, Compositing, Pre-Painting and Painting. When CrRendererMain is finished compiling the main frame, it commits it to the Compositor (cf \textit{BeginMainFrameCommit}).
+    \item When the Compositor receives a new main frame (cf \textit{BeginCommit}), it computes Tiling and Raster if necessary with the help of other threads. The main frame can then be activated (cf \textit{ActivateLayerTree}): it replaces the old main frame in the memory of the Compositor thread and can be used as a baseline for future frames.
+    \item Once the deadline scheduled in step 2 is up, the frame is drawn. This step is the last stage of pipeline presented previously: Drawing. The Compositor generates a ComositorFrame (cf \textit{GenerateRenderPass} and \textit{GenerateCompositorFrame}) with a main frame as a baseline and sends it to the GPU Process (cf \textit{SubmitCompositorFrame}).
+    \item The VizCompositorThread receives all necessary surfaces (cf \textit{ReceiveCompositorFrame}), aggregates them into a single frame (cf \textit{SurfaceAggregation}) and sends it to CrGpuMain thread.
+    \item Finally, CrGpuMain receives the frame and swap buffers for SurfaceFlinger (cf \textit{SwapBuffers} and \textit{FrameCompleted})
+\end{enumerate}
+
 
 A Main Frame starts to compute the frame at \textit{BeginMainFrame} timestamp. A Basic Frame which re-uses a previous main frame only starts computing at the beginning of 'ProxyImpl::ScheduleActionDraw' event. 
 
@@ -207,7 +262,9 @@ On the other hand, Chrome's pipeline is much less consistent and depends on a lo
 Thus, it is meaningless to compare Chrome's frames with Android's from the start of Choreographer or the start of Vsync.
 
 Another point against doing this is the the input events. Those are always handled on Android inside the Choreographer, just before computing the frame. On Chrome, however, they are handled asynchronously and thus an input can affect a frame currently being drawn or start a new one.
-
+\iffalse
+Moreover, the input events also pose a problem. Those are always handled on Android inside the Choreographer, just before computing the frame. However they are handled asynchronously on Chrome and can even be handled in the middle of the computation of a new frame. An input event can affect a frame currently being drawn or start a new one. With this method of comparison, some of the frames on Chrome would contain input events while others would not. Thus, it is irrelevant. 
+\fi
 This leaves us with comparing the amount of time they spent on computing the frame. For Android, it starts with traversal, and can be accessed with the PerformTraversalStart timestamp. For Chrome, it is a little more complicated as a 'frame' for Android, that is a graphical buffer swapped for SurfaceFlinger, consists of several frames computed in parallel and combined on Chrome's Pipeline. \newline
 
 As a Browser frame on PWA represents things usually handled by the application on Android like the scrollbar or refresh animation, and it also leads to a BufferSwap, 
@@ -218,6 +275,19 @@ For a Basic frame which reuse a Main frame already drawn, I believe the computat
 As a Buffer swap consists of both a Basic frame and a Browser frame, and a Browser frame can trigger a Buffer swap by itself, the question is do we count them as part of the PWA's frame or not. If, as I suppose, the Browser frame displays things like the scrollbar, I believe we should count them as a PWA's frame as these displays are usually handled by the app on Android. 
 
 Thus, the most meaningful comparison, in my opinion, is the time between the timestamps PerformTraversalStart->FrameCompleted on Android and PrepareToDraw/BeginMainThreadFrame(if new main frame)->FrameCompleted of the Compositor frame of the Browser frame on Chrome (depending which took longest for the corresponding Buffer swap).
+
+\iffalse
+\begin{enumerate}
+    \item When do Chrome starts computing a Main Frame ? \newline
+    As the first stages of Chrome's pipeline happens just after \textit{BeginMainFrame}, this timestamp will be considered the start of the computation for a Main Frame.
+    \item When do Chrome starts computing a Basic Frame that re-uses a Main Frame ? \newline
+    The only stage of Chrome's pipeline computed in a Basic Frame is Drawing, which starts at 'ProxyImpl::ScheduleActionDraw' event. Thus, it will be considered the start of the computation of a Basic Frame.
+    \item Do frames which only changes the Browser surface count as frames to compare to Android application ? \newline
+    The Browser surface represents on PWA what is usually also handled by the application on Android (scrollbar, refresh animation). Thus, those frames will also be compared to Android frames. 
+    \item When both the Renderer surface and the Browser surface changes, what to consider the start of the frame ? \newline
+    Since both Browser frames and Renderer frames are to be compared to Android, and they are pushed to SurfaceFlinger as a single frame, the start of the frame will be the start of the Browser or the Renderer frame depending on which happens the earliest. 
+\end{enumerate}
+\fi
 
 \fi
     
@@ -255,7 +325,82 @@ Thus, we will compare the FPS rate of a Native Android Application and a Progres
 We will measure FPS, CPU and Memory usage to see the impact of CPU and Memory usage in the fluidity of the app.
 \newline
 
+\subsection{CPU}
+
+\todo[inline, color=cyan!20]{Remove entirely the next paragraph ?}
+
+\todo[inline]{Well it seems a result of your observations, I think it should not be here after all.}
+However, there is a small issue with cpuinfo: the output is not always up-to-date, with sometimes a 15 min difference between the data displayed and the time it is called (it will display 'CPU usage from X ms to X ms ago'). This makes it difficult to use for automated experiments. Upon inspecting the source code\footnote{https://github.com/aosp-mirror/platform\_frameworks\_base/blob/master/services/core/java/com/android/server/am/ActivityManagerService.java} of meminfo and cpuinfo, it was found that the data saved by cpuinfo is updated each time meminfo is called. It was observed that was not always the case when 2 consecutive calls are too close to each other, but it is enough to have CPU usage from at least the last minute.
+
+Upon inspecting Chrome Devtools and its source code\footnote{https://github.com/ChromeDevTools/devtools-frontend}, 3 possible methods of measuring CPU usage were identified:
+\begin{enumerate}
+    \item CPU graph displayed by Chrome Devtools Performance Panel
+    \item cpuTime metric computed by Chrome Devtools for each frame
+    \item CPU sampling events saved during a recording
+\end{enumerate}
+
+\paragraph{}
+According to the source code of Chrome Devtools, the CPU graph is actually computed from the selftime of the functions. The selftime of the function is the amount of time it is running itself and does not wait for a function it called. Though a function usually use the CPU during its chole self-time, that is not always the case. The function can be paused for the CPU to perform other tasks for example. Thus, the CPU graph from Chrome Devtools, though a good approximation, is not accurate enough to compare the CPU usage of Android and Progressive Web applications. \newline
+The cpuTime metric provided for each frame is computed similarly but its computation is limited to events related to the computation of the frame. Thus, it is also not usable as an accurate measure.
+
+\paragraph{}
+This leaves the CPU sampling events saved during a recording. CPU sampling \cite{cpu_sampling} can evaluate the CPU usage by retrieving regularly the functions currently running on the CPU. The more samples taken, the more accurate the estimation will be. This method was evaluated against the command line \textit{adb shell dumpsys cpuinfo} by measuring the CPU usage of a  Progressive Web App running on an Android emulated device with both methods (CPU sampling and dumpsys).
+\color{blue}
+The emulated device only had a single CPU core in case the CPU sampling only happen on the CPU cores running the app. The Progressive Web App was able to simulate different CPU workload depending on the frequency of a text changing.
+\paragraph{}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=13cm]{kththesis/Figures/cpu_graph.JPG}
+    \caption{CPU usage}
+    \label{fig:cpu_usage}
+\end{figure}
+
+The results are the average of 100 measures were taken for each method and workload(see \autoref{fig:cpu_usage}). If the CPU sampling from Chrome Devtools was accurate enough, its curve would be close to the measures taken by dumpsys, though always behind as \textit{dumpsys cpuinfo} provides a maximum CPU usage of the application. This is not the case here.
+
+\paragraph{}
+Thus, the CPU usage of both Android and Progressive Web application will be measured with the command line \textit{adb shell dumpsys cpuinfo}.
+
+\color{black}
+    
+
+
+\subsection{Benchmark applications}
+\paragraph{}
+Since a frame in a Progressive Web App can take 2 different rendering path depending on the changes occurring in the frame, at least 2 different features favouring one path or another will have to be developed. The Main Frame path is always triggered when changing some content on the screen since at least Painting is required. The Basic Frame path is favoured when scrolling a page, as the Compositor thread usually only needs to change the position of an already-painted layer against the display screen. 
+
+The frame duration will be evaluated with a 3s recording, the memory snapshot will be executed after 10s of running a scenario in order to update the data for \textit{cpuinfo} and the CPU usage will be extracted shortly after.
+
 \subsection{Scripts implementation}
 \todo[inline]{Explain your technical contributions}
+In order to remove the human interaction variable from the results, all experiments will be executed by automated scripts. All of them are available in a Git repository\footnote{TODO:git link, maybe create a clean repo with everything after}.
 
+\chapter{Results}
+\section{Smoothness performance}
+\paragraph{Frame duration}
+Though the Progressive Web App is never the fastest one to compute a frame, it is not always the slowest and surpasses the Native application in 3 instances: when changing a picture on Samsung S5 and Huawei P9-Lite, and when changing a text on Samsung S5.
+
+\paragraph{Resources}
+
+The results presented here are the average of 100 measures. In every scenario, the Native application uses less resources than the Hybrid and the PWA, both in terms of CPU and Memory usage. The performance of the Native, Hybrid and Progressive Web App differ depending on the device. \paragraph{}
+In Scenario 1 (\autoref{tab:text:changing}), the Progressive Web App takes longer than the Hybrid app to compute a frame with an increase of 36\% on Samsung S6, 11\% on Samsung S5 and 139\% on Huawei. The difference is smaller between the Native application and the Progressive Web App, the latter being even faster than the Native app on Samsung S6.
+%However, the Native application consumes a lot less resources than the Hybrid and the Progressive Web app, with the progressive Web App consuming slightly less CPU than the Hybrid app.
+
+\paragraph{}
+In Scenario 2 (\autoref{tab:text:scrolling}), the Native application is faster than both the Hybrid and the PWA on every device. A clear difference of performance is visible between the performance on Samsung S6 and the performance on Samsung S5 and Huawei. All apps compute a frame in 17-19ms on Samsung S6 while the Hybrid and Native app take only 3 to 7 ms on Samsung S5 and Huawei. However, the performance of the Progressive Web app does not improve this much and stays between 14 - 17 ms. 
+%The Native app consumes less resources than the Hybrid and Progressive Web App, with the Hybrid consuming slightly less CPU than the Progressive Web App this time.
+
+\paragraph{}
+In Scenario 3 (\autoref{tab:picture:changing}), the Hybrid application is faster on all three devices. The Progressive Web App is faster than the Native app on two devices, Samsung S5 and Huawei, but lags behind by 20\% on Samsung S6. 
 \end{document}
+
+\chapter{Discussion}
+
+This may be due to the size of the frameworks used for the Hybrid and PWA, while the framework used in Native application is part of the OS and not the application.
+
+However, it should be noted that the scrolling experiments were not as consistent between devices and frameworks than when changing content. The same drag event did not trigger the same scrolling speed across device and framework, and the length of the scrolling page was different. It is also difficult to simulate the same drag event with \textit{monkeyrunner} and the Input Domain of Chrome DevTools Protocol. More experiments would be needed to confirm the performance observed when scrolling. Moreover, the clocks of different threads in Chrome were found to be slightly out of sync. Thus, some events were detected before their triggering events on another thread. However, those incidents concerned events not counted in the frame duration. They were scarce and of small magnitude and thus do not invalidate the results presented previously.
+
+\chapter{Conclusion}
+
+One possibility of future work identified in the limitations is the extension of this thesis to other browsers and OS, especially iOS which is often discarded in academic research about Progressive Web Apps. This study can also be extended with other cross-platform and Web framework, for example Xamarin and Angular.\newline
+The other possibilities involve studying another aspect of performance of a mobile application, for example its responsiveness, its battery consumption or the performance of other animations like videos or those found in games.
