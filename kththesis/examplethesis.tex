@@ -8,6 +8,7 @@
 \usepackage{subcaption}
 \usepackage{array}
 \usepackage{enumitem}
+\usepackage[boxruled,vlined, figure]{algorithm2e}
 
 \usepackage{xcolor}
 
@@ -15,7 +16,7 @@
 \usepackage[style=numeric,sorting=none,backend=biber]{biblatex}
 \addbibresource{references.bib} % The file containing our references, in BibTeX format
 \title{Comparison of Smoothness in Progressive Web Apps and Mobile Applications on Android}
-\alttitle{Jämförelse av progressiva webbappar och mobilapplikationer på Android}
+\alttitle{Jämförelse av smidighet i progressiva webbappar och mobilapplikationer på Android}
 \author{Camille Fournier}
 \email{camillef@kth.se}
 \supervisor{Javier Cabrera-Arteaga}
@@ -50,13 +51,13 @@
 \titlepage
 
 \begin{abstract}    
-  One of the main challenge of mobile development lies in the high fragmentation of mobile platforms. Developers often need to develop the same application several times for all targeted platforms, raising the cost of development and maintenance. One solution to this problem is cross-platform development, which traditionally only includes mobile applications. However, a new approach introduced by Google in 2015 also includes web applications. Progressive Web Apps, as they are called, are web applications that can be installed on mobile and behave like mobile applications. This research aims at studying and comparing their performance to mobile applications on Android, especially in terms smoothness. To that end, we analyzed the Rendering pipeline of Android and Chrome and deducted a smoothness metric. Then, a Progressive Web App, a Native Android and a React Native Hybrid Application were developed and their performance measured in several scenarios. The results imply that Progressive Web Applications, though they have great benefits, are not as smooth as Mobile applications on Android.
+  One of the main challenges of mobile development lies in the high fragmentation of mobile platforms. Developers often need to develop the same application several times for all targeted platforms, raising the cost of development and maintenance. One solution to this problem is cross-platform development, which traditionally only includes mobile applications. However, a new approach introduced by Google in 2015 also includes web applications. Progressive Web Apps, as they are called, are web applications that can be installed on mobile and behave like mobile applications. This research aims at studying and comparing their performance to mobile applications on Android, especially in terms of smoothness. To that end, we analyzed the Rendering pipeline of Android and Chrome and deducted a smoothness metric. Then, a Progressive Web App, a Native Android and a React Native Hybrid Application were developed and their performance measured in several scenarios. The results imply that Progressive Web Applications, though they have great benefits, are not as smooth as Mobile applications on Android.
 \end{abstract}
 
 
 \begin{otherlanguage}{swedish}
   \begin{abstract}
-    En av de största utmaningarna med mobilutveckling ligger i den höga fragmenteringen av mobilplattformar. Utvecklare behöver ofta utveckla samma applikation flera gånger för alla riktade plattformar, vilket ökar kostnaderna för utveckling och underhåll. En lösning på detta problem är plattformsutveckling, som traditionellt endast innehåller mobilapplikationer. En ny metod som Google introducerade 2015 inkluderar dock webbapplikationer. Progressiva webbappar, som de kallas, är webbapplikationer som kan installeras på mobil och bete sig som mobilapplikationer. Denna forskning syftar till att studera och jämföra deras prestanda med mobila applikationer på Android, särskilt när det gäller smidighet. För detta ändamål analyserade vi Rendering-pipeline för Android och Chrome och drog en jämnhetsmetrisk. Sedan utvecklades en progressiv webbapp, en Native Android och en React Native Hybrid-applikation och deras prestanda uppmättes i flera scenarier. Resultaten innebär att progressiva webbapplikationer, även om de har stora fördelar, inte är lika smidiga som mobilapplikationer på Android.
+En av de största utmaningarna med mobilutveckling ligger i den höga fragmenteringen av mobilplattformar. Utvecklare behöver ofta utveckla samma applikation flera gånger för alla riktade plattformar, vilket ökar kostnaderna för utveckling och underhåll. En lösning på detta problem är plattformsutveckling, som traditionellt endast innehåller mobilapplikationer. En ny metod som Google introducerade 2015 inkluderar dock webbapplikationer. Progressiva webbappar, som de kallas, är webbapplikationer som kan installeras på mobil och bete sig som mobilapplikationer. Denna forskning syftar till att studera och jämföra deras prestanda med mobila applikationer på Android, särskilt när det gäller smidighet. För detta ändamål analyserade vi Rendering-pipeline för Android och Chrome och drog en jämnhetsmetrisk. Sedan utvecklades en progressiv webbapp, en Native Android och en React Native Hybrid-applikation och deras prestanda uppmättes i flera scenarier. Resultaten antyder att progressiva webbapplikationer, även om de har stora fördelar, inte är lika smidiga som mobilapplikationer på Android.
   \end{abstract}
 \end{otherlanguage}
 
@@ -78,37 +79,60 @@ Then, I want to thank the company Odiwi that welcomed me and helped me conduct m
 %\todo[inline]{Section names as questions is not good :)}
 %\todo[inline, color=cyan!20]{What title would be good then ? Because we should have a section specific for the research questions right ?}
 %\todo[color=cyan!20]{Also introduce smoothness as it is the main part of the thesis}
+\iffalse
 \todo[inline, color=green!40]{Intro is too short.
 Please add: 
 - a part of novelty (what is the state of the art and how novel is your contribution)
 - a part about the methodology and key results
 
 Each part can be short (one or 2 paragraphs) and focused on the essential aspects}
+\fi
 
 \indent 
 
 One of the biggest challenges of mobile development today lies in the high fragmentation of mobile platforms \cite{MobileDevChallenges} with developers building the same app over multiple platforms. A popular solution is cross-platform development, that is to say developing with a framework capable of using the same code for multiple platform builds. However, such cross-platform development does not concern web applications that developers still have to develop separately from mobile applications. To answer this problem, Google introduced in 2015 the concept of \textit{Progressive Web Apps} \cite{PWA_intro}, a term first coined by designer Frances Berriman and Google Chrome developer Alex Russel \cite{PWA_blog, PWApossibleUnifer}.
-This chapter will introduce the concept of Progressive Web Apps and the objective of this work.
+This chapter will introduce the concept of Progressive Web Apps and the objectives of this work.
 
 \paragraph{}
 Progressive Web Apps, also called PWA, are Web Applications that can be installed on a mobile phone by the browser and provide an offline experience. End users may even think of them as real mobile applications as they are displayed in fullscreen and can be detected by the Application Manager depending on the device and the browser.
 Progressive Web Apps have become more and more popular since they were introduced to the application development community. Several success stories can attest it : AliBaba\footnote{https://developers.google.com/web/showcase/2016/alibaba} and Aliexpress\footnote{https://developers.google.com/web/showcase/2016/aliexpress} reported an increase of respectively 76\% and 104\% of their conversion rate after releasing their PWA. Twitter\footnote{https://medium.com/@paularmstrong/twitter-lite-and-high-performance-react-progressive-web-apps-at-scale-d28a00e780a3} saw a reduction of their data usage coupled with a 75\% increase of tweets sent. Pinterest\footnote{https://medium.com/dev-channel/a-pinterest-progressive-web-app-performance-case-study-3bd6ed2e6154} reported a 40\% increase of user time and a 44\% of user-generated revenue.
 
 \paragraph{}
-Existing research suggests that PWA are a good alternative to mobile applications. Their installation size and energy consumption are much smaller\citationneeded. Their launch time \citationneeded and their First paint metric\footnote{Time to render the first pixel} can be lower than a mobile application. For a developer, they are not much more complex than regular web applications to develop\citationneeded and easier to maintain than native applications. \newline
-\indent
+Existing research suggests that PWA are a good alternative to mobile applications. Their installation size and energy consumption are  smaller\cite{PWAapplicability}. Their launch time \cite{Biorn-Hansen2} and their First paint metric\footnote{Time to render the first pixel}\cite{PWAapplicability} can be lower than a mobile application. For a developer, they are not much more complex than regular web applications to develop\cite{JohannsenFabian2018PWAa} and easier to maintain than native applications. \newline
+
 However, no research has been conducted regarding the run-time performance of Progressive Web Applications, especially the performance of the User Interface, which can be evaluated with two key elements: the responsiveness and the smoothness. The responsiveness refers to how fast the application can respond to user input. The smoothness refers to how fast the application can render frames. The latter can impact the former as applications usually respond to user input visually and needs to render new frames. Other important factors of the run-time performance are CPU usage and memory performance as those resources are limited on mobile phones. At the time of writing, no study was found that examined those metrics in Progressive Web Apps.
 
 \paragraph{}
-This thesis will focus on several aspects of the run-time performance of Progressive Web Apps and aim at answering the following questions: \newline
-\medskip
-\textbf{RQ1:} How does the smoothness of Progressive Web Apps compare to Mobile applications ? \newline
-\medskip
-\textbf{RQ2:} How does the memory performance of Progressive Web Apps compare to Mobile applications? \newline
-\medskip
-\textbf{RQ3:} How does the CPU usage of Progressive Web Apps compare to Mobile applications?
+This thesis will focus on several aspects of the run-time performance of Progressive Web Apps and aim at answering the following questions: 
+
+\begin{itemize}
+    \item \textbf{RQ1:} How does the smoothness of Progressive Web Apps compare to Mobile applications ? 
+    
+    \item \textbf{RQ2:} How does the memory performance of Progressive Web Apps compare to Mobile applications? 
+    \item \textbf{RQ3:} How does the CPU usage of Progressive Web Apps compare to Mobile applications?
+    
+\end{itemize}
+\todo[inline, color=green]{Need to elaborate on the last paragraph of this page. The global challenge is to collect relevant performance metrics. For this, you need two things: the ability to run different versions of an application, in a controlled environment; tools that monitor performance metrics.
+We address the first challenge with [here, explain which apps you use, which workload, etc.]
+To address the second challenge, we investigate several techniques and tools. [One sentence to explain what you investigate to measure memory perf.; another sentence for CPU metrics; then elaborate on the absence of a known framework to measure the smoothness of PWAs]
+The key technical contribution of this thesis consists in the elaboration of a relevant model to assess the smoothness of PWAs. [Explain what you did to build this model, and what is the form of the model, how it can be reused by other developers and researchers, and how you use it in your thesis] }
+
 \paragraph{}
-Since little documentation was found on the rendering pipeline of Chrome, the main challenge behind \textbf{RQ1} will be to build a model of Chrome's rendering pipeline and find a metric able to compare the smoothness of Progressive Web Apps and Mobile applications on Android. The smoothness, memory performance and CPU usage will be evaluated during different scenarios on 3 different applications: a Progressive Web App, a Cross-platform app developed with React Native and a Native app. The results show that Progressive Web Apps are less smooth than mobile applications. They consume similar amount of CPU and memory than Cross-platform applications but more than Native applications.
+The global challenge behind these research questions is to collect relevant performance metrics. For this, we need to run different versions of an application in a controlled environment, and tools that monitor the performance metrics. \newline
+We address the first challenge with 3 applications: a Native Android app, a cross-platform app developed with React Native and a Progressive Web App developed with ReactJS. \todo[color=cyan!20]{What does he mean, which workload?}
+To address the second challenge, we investigate several techniques and tools. The memory performance was evaluated with the amount of RAM used by the applications. The CPU usage was measured thanks to Android tools. The smoothness  
+
+\paragraph{}
+Many challenges lies behind these research questions. Since no documentation was found on the rendering pipeline of Chrome, the first step toward answering \textbf{RQ1} is to build a model empirically. Only then we can find a smoothness metric able to compare the smoothness of Mobile and Progressive Web Apps. Another challenge is to find appropriate tools to measure accurately the memory and CPU usage of Progressive Web Apps.
+
+\paragraph{}
+The first part of this research was to find a metric able to compare the smoothness of Mobile and Progressive Web Apps. To this end, we built a model of Chrome's rendering pipeline and deduced a smoothness metric from it. Then, the smoothness, memory performance and CPU usage was evaluated during different scenarios on 3 different applications: a Progressive Web App, a Cross-platform app developed with React Native and a Native app. 
+
+\paragraph{}
+The novelty of this work resides in several points. At the time of writing, no known research has studied the smoothness, the memory performance nor the CPU usage of Progressive Web Apps. Moreover, the method used to compare the smoothness of the applications has never been used before, as far as we know. The model of Chrome's rendering pipeline built empirically is also novel to the best of our knowledge.
+
+\paragraph{}
+The results show that Progressive Web Apps are less smooth than Native and Hybrid applications. However, they consume similar, or smaller depending on the scenario, amount of CPU and memory than Hybrid applications. Nonetheless, the performance of Progressive Web Apps do not compare to Android Native applications in every aspect studied here.
 
 \iffalse
 \section{Research Questions}
@@ -138,7 +162,7 @@ The smoothness performance of the applications will be evaluated with two aspect
 
 \chapter{Background}
 
-\todo[inline, color=green]{Restructure: start with 2.2 (a generic intro to mobile dev) then 2.1 (PWA), 2.3(Profiling tools), 2.4(Rendering pipeline). Extract the state of the art as a separate section of the chapter, which comes just before the problem statement. The flow is as follows: introduce the context, the technical scope of your work, current state of the art and conclude with gaps in the state of the art and the statement of your research problem.}
+%\todo[inline, color=green]{Restructure: start with 2.2 (a generic intro to mobile dev) then 2.1 (PWA), 2.3(Profiling tools), 2.4(Rendering pipeline). Extract the state of the art as a separate section of the chapter, which comes just before the problem statement. The flow is as follows: introduce the context, the technical scope of your work, current state of the art and conclude with gaps in the state of the art and the statement of your research problem.}
 
 The aim of this chapter is to introduce the terminology and concepts used in this study. We will also present the work previously done in the field of Progressive Web Apps and analyze the tools available to measure the performance of Android mobile applications and PWA.
 
@@ -325,10 +349,12 @@ For example scrolling only changes the position of a layer. There is no need to 
 
 \section{State of the art} 
 
+\iffalse
 \todo[inline, color=green]{I suggest to restructure this section
 - select the closest works to your study, discuss them in detail and add an explicit part where you discuss the limitations of these works and how your work addresses these limitations and contributes to the state of the art
 - then, summarize the other works in a couple of paragraphs, grouped by topics (for example resource analysis for PWA, user experience, etc.)
 - it would also be good to cite some related works in the area of performance evaluation}
+\fi
 
 This section will first present the academic research related to Progressive Web Apps and then describe other works that evaluated the performance of cross-platform frameworks.
 
@@ -345,7 +371,7 @@ Kressens \cite{PWAapplicability} compared the First Paint metric\footnote{Time t
 Yberg \cite{YbergViktor2018NPaU} compared manually the launch time of an android native application and a PWA with and without the browser in memory. The PWA was faster (with the browser in memory) or as fast as the native application. \newline
 Malavolta, after presenting Progressive Web Apps as a mobile development strategy \cite{malavolta2016beyond}, focused on the impact of service workers on PWA's energy consumption and found no significant impact\cite{SW_and_energy}. \newline
 Fransson and Driaguine \cite{PWAbc_responsetime} compared the response time of PWAs and Native Android Applications when accessing the camera and geolocation. The Progressive Webb App was faster at using geolocation than its native counterpart. On the contrary, camera access was faster on the native app than the PWA. \newline
-Johannsen \cite{JohannsenFabian2018PWAa} evaluated the code complexity brought by Progressive Web Applications to a regular application using different metrics such as the cyclomaic complexity and Halstead effort. He concluded that the added complexity was low\todo[color=green!40]{how is this assessed?}. \newline
+Johannsen \cite{JohannsenFabian2018PWAa} evaluated the code complexity brought by Progressive Web Applications to a regular application using different metrics such as the cyclomatic complexity and Halstead effort. He concluded that the added complexity was low. \newline
 Lee et al. \cite{Pride_Prejudice} explored the security system behind the push notification system for Progressive Web Apps and found several concerning flaws which they reported to the vendors. \newline
 %Khan et al. \cite{pwa_ahp} compared native, mobile web, hybrid and progressive web apps using an Analytical Hierarchy Process with three criteria : application size, multi-platform support and offline accessibility. They concluded \todo[color=green!40]{what does that mean?} that Progressive Web Apps were the best mobile development option. \newline
 Gambhir and Raj \cite{gambhir2018analysis} analysed the impact of service workers on the performance of Progressive Web Apps and compared it to Android applications, especially the response time of the servers. They found that PWAs could perform better than Android applications. \newline
@@ -380,7 +406,7 @@ Delia et al. \cite{delia2017approaches} evaluated the performance of Cross-platf
 
 \section{Problem Analysis}
 
-\todo[inline, color=cyan!20]{Change definition of smoothness and rephrase according to introduction}
+%\todo[inline, color=cyan!20]{Change definition of smoothness and rephrase according to introduction}
 
 Though some security issues need to be resolved \cite{Pride_Prejudice}, Progressive Web Apps have the potential to become a popular cross-platform solution for developing mobile applications. They do not add much complexity to a regular web app \cite{JohannsenFabian2018PWAa}, greatly reduce the cost of developing a mobile application for every platform, and have similar performance than mobile applications regarding launch time \cite{PWApossibleUnifer}\cite{Biorn-Hansen2} \cite{PWAapplicability}, energy consumption \cite{PWAapplicability}, user experience \cite{emulating_native_w_crossplatform}\cite{PWA_UX_comparison_study}, or even hardware access in some cases \cite{PWAbc_responsetime}. 
 \paragraph{}
@@ -400,9 +426,11 @@ This chapter provided the necessary background to conduct this research and addi
 
 \chapter{Methodology}
 
-\todo[inline, color=green!40]{have a specific section where you elicit each question, motivate them, and explain the methodology to answer them}
+%\todo[inline, color=green!40]{have a specific section where you elicit each question, motivate them, and explain the methodology to answer them}
 
 The aim of this study is to compare the smoothness of Mobile and Progressive Web Applications, as well as the memory performance and the CPU usage. The main challenge behind this goal is to define a metric able to compare the smoothness of Mobile and Progressive Web App. For this, a model of Chrome's rendering pipeline had to be built. This chapter will outline the reasons behind the necessity of this model and the method used to built it. It will also describe the methods and experiments used to evaluate the CPU usage, the memory usage and the smoothness of Mobile and Progressive Apps.
+
+\todo[inline, color=green]{same remark as intro: you need to clarify the relationship between chrome and pWA. Here, you also need to add one sentence to explain what is the model you are talking about (is it an equation, is it a simulator, is it a monitoring tool...)}
 
 \iffalse
 We will reach this goal by answering 3 questions: How can we compare the smoothness of Progressive Web Applications and Mobile Applications? Are Progressive Web Applications as smooth as Mobile Applications? How efficient are they, that is how many resources are used to render a smooth application? \newline
@@ -412,7 +440,7 @@ This chapter will present the methods used to define a smoothness metric and to 
 \section{Modeling the smoothness of PWA}
 \label{method:smoothness}
     
-    The smoothness of an application according to Android and Chrome is closely related to the frames displayed by the application. If a frame takes too long to be rendered, the user might notice some stuttering or freezing, resulting in a poorer quality of the User Experience. Thus, comparing the smoothness of Mobile applications and PWA amounts to compare the frame duration on Android and the browser, Chrome in this study. Hence, understanding how Android and Chrome compute frames is essential. 
+    The smoothness of an application according to Android and Chrome is closely related to the frames displayed by the application\citationneeded. If a frame takes too long to be rendered, the user might notice some stuttering or freezing\todo[color=green]{explain stuttering and freezing}, resulting in a poorer quality of the User Experience. Thus, comparing the smoothness of Mobile applications and PWA amounts to compare the frame duration\todo[color=green]{frame display duration ?} on Android and the browser, Chrome in this study. Hence, understanding how native Android and Chrome compute frames, for an executing application, is essential. 
     
     \subsection{Rendering a frame in Android}
     
@@ -438,8 +466,20 @@ This chapter will present the methods used to define a smoothness metric and to 
     By looking at Android source code\footnote{\url{https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/view/Choreographer.java}}, it is possible to link the timestamps gathered by \textit{dumpsys gfxinfo} to the events displayed by Systrace (see \autoref{fig:android_frame_timeline}), giving an overview of the path taken by a frame on Android. \newline
     \indent Every frame starts with a VSYNC signal (first vertical red line in \autoref{fig:android_frame_timeline}), which acts as was presented in \autoref{background:pipeline:android} as a wake-up call for all the components of Android Graphics. The UI thread handles input and animation before measuring and computing the layout of the graphical elements. It updates the frame and hands it to the Renderer thread which issues the drawing commands and pushes the graphic buffer to SurfaceFlinger. To sum up, for Android a frame starts at VSYNC signal and is completed when its graphic buffer is pushed to SurfaceFlinger.
     
-    \paragraph{}
+    \todo[inline, color=green]{Good to conclude with a summary. I suggest to elaborate
+- is the process that you described enough to capture a smoothness value for a native app?
+- what is this value?
+- did you build a tool on top of gfxinfo and systrace to compute the smoothness value?}
+    
+    \subsection{Modeling a frame in Chrome}
+    
     However, we can see on \autoref{fig:pwa_systrace_zoom} that the frames on Chrome follow a different pipeline and thus remain undetected by Android system. Nonetheless, we can observe common functions in the Systrace flamegraphs of Android applications and Chrome. Both of them use the same function to push a graphic buffer to SurfaceFlinger, and then display a new frame. Thus, if we gather similar timestamps for Chrome's frames than for Android's, it would be possible to compare the smoothness of the applications.
+    
+    |t1||t2|...|t3|
+    |e1||e2|...|e3|...|en|
+    \^
+    |
+    
     
     \begin{figure}
         \centering
@@ -448,21 +488,63 @@ This chapter will present the methods used to define a smoothness metric and to 
         \label{fig:pwa_systrace_zoom}
     \end{figure}
     
-    \subsection{Modeling a frame in Chrome}
-    
-    Other tools specific to Chrome exist to collect the frame's duration of a web application, such as Chrome DevTools performance panel and Telemetry. Nevertheless, the inspection of their source code revealed that they define a frame duration as the interval between two consecutive frames, making those tools useless for comparing PWA and Mobile applications on Android.
+    Other tools specific to Chrome exist to collect the frame's duration of a web application, such as Chrome DevTools performance panel and Telemetry. Nevertheless, the inspection of their source code revealed that they define a frame duration as the interval between two consecutive frames, making those tools useless\todo[color=green]{why useless?} for comparing PWA and Mobile applications on Android.
     
     \paragraph{}
-    Comparing the smoothness of Native Android, Hybrid and Progressive Web Applications requires a detailed overview of a frame's rendering pipeline, both on Chrome and Android. The latter provides it with the frame's timestamps gathered by \textit{dumpsys gfxinfo}. No documentation or tool was found to provide a similar overview of a frame's pipeline on Chrome. Thus, the first step toward comparing the smoothness of Mobile and Progressive Web Apps on Android is to build a model of Chrome Graphics pipeline
-    %However, Chrome Tracing tool can record and display many functions called by Chrome's processes.
-    
-    \todo[inline, color=green!40]{this model is part of your contributions, right?
-Make it more explicit, for example replace the first sentence by: The first step of our methodology consisted in building a model of chrome graphics pipeline, through an iterative process.
-Aslo, you need to motivate why you build such a model. How does it help to answer the RQs? }
+    Comparing the smoothness of Native Android, Hybrid and Progressive Web Applications requires a detailed overview of a frame's rendering pipeline, both on Chrome and Android. The latter provides it with the frame's timestamps gathered by \textit{dumpsys gfxinfo}. No documentation or tool was found to provide a similar overview of a frame's pipeline on Chrome. Thus, the first step toward comparing the smoothness of Mobile and Progressive Web Apps on Android is to build a model of Chrome Graphics pipeline.
+
+    \todo[inline, color=green]{separate the description of the rules you use to monitor and analyze the events from the fact that these rules are implemented as a script in a specific languages environment (i.e., separate the 'what' from the 'how')
+Concretely: this paragraph should discuss an algorithm and at the end you can mention that you implemented the algorithm in language YY, because of XXX and this script is publicly available.
+For figure 3.4: I suggest to turn it into an Algorithm (in latex)}
     
     \paragraph{}
-    To this end, we used Chrome Tracing tool which can record and display many functions called by Chrome's processes. Th model was built empirically with an iterative process. The events recorded by Chrome Tracing tool were processed by a script which tracked the start and end of the frames as predicted by the model. If any error was raised, a visualization of the events on Chrome Tracing tool and a revision of the code allowed either to fix a bug in the script\todo[color=green!40]{What code?} or to change the model according to the events observed. \newline
-    The model was first built with a single benchmark application with limited interactions. It was then confronted with 10 traces of 8 different PWAs from the Github repositories pwarocks\footnote{https://github.com/pwarocks/pwa.rocks} and awesome-pwa\footnote{https://github.com/hemanth/awesome-pwa} to include a wider range of interactions. This confrontation was done 3 times each, with new PWAs until no significant errors remained.
+    To this end, we used Chrome Tracing tool which can record and display many functions called by Chrome's processes. The model was built empirically with an iterative process. The events recorded by Chrome Tracing tool were processed by a script which tracked the frames computed by Chrome as predicted by the model\todo[color=green]{Which model, which prediction?}.  A simplified version of the script is listed on \autoref{alg:frametracker}.
+    This script, named \textit{FrameTracker}, goes through the events recorded by Chrome Tracing tool. If the event is the starting event of the frame, it adds a new one to the list. If not, it looks for the corresponding frame in the list of tracked frames and updates its status accordingly. If anything was not as expected \todo[color=green]{Same question: where do these expected values come from} (the status of the corresponding frame, expected child events), an error is raised. The complete script is available on a Git repository\footnote{PWA\_Master\_Thesis repository: \url{https://github.com/camilleFournier/PWA_Master_Thesis}}.
+    
+    \begin{algorithm}
+        \TitleOfAlgo{FrameTracker}
+        \SetAlgoLined
+        \KwIn{List of events recorded}
+        \KwResult{List of frames with their timestamps }
+        initialization: order events by timestamp\;
+        \ForEach{event}{
+            \Switch{name of event}{
+                \Case{Event1}{
+                    startFrame()\;
+                }
+                \Case{Event2}{
+                    findCorrespondingFrame()\;
+                    \eIf{somethingIsWrong()}{
+                        print(errors)\;
+                    }{
+                        updateFrame();
+                    }
+                }
+                \Case{Event3}{
+                    findCorrespondingFrame()\;
+                    \eIf{somethingIsWrong()}{
+                        print(errors)\;
+                    }{
+                        completeFrame();
+                    }
+                }
+                \Case{Event4}{
+                    findCorrespondingFrame()\;
+                    \eIf{somethingIsWrong()}{
+                        print(errors)\;
+                    }{
+                        dropFrame();
+                    }
+                }
+            }
+        }
+        \caption{FrameTracker}
+        \label{alg:frametracker}
+    \end{algorithm}
+    
+    \paragraph{}
+    If any error was raised, a visualization of the events on Chrome Tracing tool and a revision of the script allowed either to fix a bug in the script or to change the model according to the events observed. \newline
+    The model was first built with a single benchmark application with limited interactions. It was then confronted with 10 traces of 8 different PWAs from the Github repositories pwarocks\footnote{\url{https://github.com/pwarocks/pwa.rocks}} and awesome-pwa\footnote{\url{https://github.com/hemanth/awesome-pwa}} to include a wider range of interactions. This confrontation was done 3 times each, with new PWAs until no significant errors remained.
     
     Those errors were:
     \begin{itemize}
@@ -471,8 +553,8 @@ Aslo, you need to motivate why you build such a model. How does it help to answe
         \item \textbf{Bugs}: those errors are not explained by the model. However, they are varied and extremely scarce (1 error over 5 000 frames computed) and are not considered statistically significant.
     \end{itemize}
     
-\todo[inline, color=green!40]{Add a conclusion that summarizes how you will compute and compare the smoothness of a PWA and a mobile app}
-With this model which we will present in the next chapter, we were able to define a metric able to compare the smoothness of Mobile and Progressive Web Apps on Android. This metric is the frame duration, defined as the time span from the start of the computation of the frame until it is passed on to SurfaceFlinger and the Hardware Composer to be displayed on the screen.
+%\todo[inline, color=green!40]{Add a conclusion that summarizes how you will compute and compare the smoothness of a PWA and a mobile app}
+With this model\todo[inline, color=green]{don't understand what the model is, maybe add a definition} which we will present in the next chapter, we were able to define a metric able to compare the smoothness of Mobile and Progressive Web Apps on Android. This metric is the frame duration, defined as the time span from the start of the computation of the frame until it is passed on to SurfaceFlinger and the Hardware Composer to be displayed on the screen.
 
 \section{Study Subjects}
 
@@ -483,10 +565,9 @@ This section describes how the experiments used to answer the research questions
 
 Since emulators can provide easy access to a large range of Android devices, their use was considered for the final experiments. The CPU, of which the usage is a key metrics used to evaluate the performance of the applications, is a hardware difficult to emulate \cite{cpu_emulator}. Thus, it is important to test the emulators against a physical device before using them in CPU-related experiments.
 
-As was presented in the background, only a few Android emulators do not enhance the hardware capabilities of the emulated device. Only 3 were identified and tested: Android Emulator, Genymotion and Visual Studio Android Emulator. As was explained previously, the metrics used to compare the performance of the emulators were the CPU usage using \textit{dumpsys cpuinfo}, the total RAM used using \textit{dumpsys meminfo} and the percentage of janky frames using \textit{dumpsys gfxinfo}. The measures were taken while the devices ran the same application that changed a text every few milliseconds. No human interaction was necessary. The results presented in \autoref{tab:emulators_test} are the average of 110 measurements.
+As was presented in the background, only a few Android emulators do not enhance the hardware capabilities of the emulated device \todo[color=green]{What does that mean?}. Only 3 were identified and tested: Android Emulator, Genymotion and Visual Studio Android Emulator. As was explained previously, the metrics used to compare the performance of the emulators were the CPU usage using \textit{dumpsys cpuinfo}, the total RAM used using \textit{dumpsys meminfo} and the percentage of janky frames using \textit{dumpsys gfxinfo}. The measures were taken while the devices ran the same application that changed a text every few milliseconds. No human interaction was necessary. The results presented in \autoref{tab:emulators_test} are the average of 110 measurements.
 
 \begin{table}[!ht]
-
     \resizebox{\textwidth}{!}{
     %\centering
     \begin{tabular}{|m{2,5cm}|m{2cm}|m{2cm}|m{2cm}||m{2cm}|m{2,5cm}|}
@@ -572,11 +653,14 @@ Because of the tool's limitation, clicking will be recorded for 25s and scrollin
 
 The goal of this thesis is to compare the run-time performance of Mobile and Progressive Web Applications, specifically the smoothness, the memory performance and the CPU usage. This sections outlines the motivations behind the research questions and the methods used to answer them.
 
+
 \subsection{Smoothness}
 
-\textbf{R1:} How does the smoothness of Progressive Web Apps compare to Mobile applications ?
-\paragraph{}
 The smoothness of an application refers to how fast it can render a new frame. A low smoothness performance can impact the responsiveness, as mobile or web applications usually respond visually to user input. It can also decrease the user experience as the user may notice stuttering or freezing. 
+
+\paragraph{}
+\textbf{R1:} How does the smoothness of Progressive Web Apps compare to Mobile applications ?
+
 \paragraph{}
 To answer this research question, a deep understanding of how and when Android and Chrome compute a frame is needed. On Android, this understanding is provided by a combination of Android tools, and the frames path is documented with precise timestamps. However on Chrome, no documentation nor tools provides the understanding and information needed to follow a frame from start to finish. Thus, the first part of the method consists in modeling the path of a frame in Chrome. This model was built empirically with an iterative process. From it, we could deduce a metric able to compare the smoothness of Mobile and Progressive Web Applications: the frame duration, defined as the time span from the moment Chrome and Android starts computing the frame until it pushes it to SurfaceFlinger to be displayed on the screen. This metric will be measured and used to evaluate the smoothness of each application.
 
@@ -586,12 +670,12 @@ The smoothness performance of an application refers to how smooth it can be and 
 
 \subsection{Memory}
 
+The memory performance of an application is defined by the amount of RAM it consumes when it runs. As this resource is limited on smartphones and a high RAM consumption can increase the energy consumption, mobile applications need to use it efficiently. 
+\paragraph{}
 \textbf{R2:} How does the memory performance of Progressive Web Apps compare to Mobile applications ?
 
-The memory performance of an application is defined by the amount of RAM it consumes when it runs. As this resource is limited on smartphones and a high RAM consumption can increase the energy consumption, mobile applications need to use it efficiently. 
-
 \paragraph{}
-The memory in mobile applications on Android can be inspected with the service \textit{meminfo} of \textit{adb shell dumpsys}. Filtering with the application package name, it takes a snapshot of its memory and outputs detailed information about the memory used such as the java and native heap, the memory used by the code or the total amount of memory used by the application. The most interesting information is the total amount of RAM used by the application.
+The memory in mobile applications on Android is inspected with the service \textit{meminfo} of \textit{adb shell dumpsys}. Filtering with the application package name, it takes a snapshot of its memory and outputs detailed information about the memory used such as the java and native heap, the memory used by the code or the total amount of memory used by the application. The most interesting information is the total amount of RAM used by the application.
 
 \paragraph{}
 Without filtering, this command line outputs the total amount of RAM used for each process. The processes are also ordered by section: persistent, foreground, visible and cached among others. \newline
@@ -599,10 +683,12 @@ The foreground section is the most useful. When a mobile application is running,
     
 \subsection{CPU}
 
+A high CPU usage in mobile phones often results in high energy consumption, a very limited resource in smartphones. Thus, it is important that mobile applications use the CPU efficiently.
+
+\paragraph{}
 \textbf{R3:} How does the CPU usage of Progressive Web Apps compare to Mobile applications ?
 
 %\todo[inline, color=cyan!20]{Present motivation: why CPU?}
-A high CPU usage in mobile phones often results in high energy consumption, a very limited resource in smartphones. Thus, it is important that mobile applications use them efficiently.
 
 There are 2 command lines that can be used to measure CPU usage of mobile applications on Android: \textit{adb shell top} and \textit{adb shell dumpsys cpuinfo}. \textit{Top} is similar to the Linux command of the same name, but with limited options. On Android, it is not possible to change the display from percentage of total CPU available to percentage of CPU core. This makes it less accurate than \textit{dumpsys cpuinfo} which displays the percentage of CPU core. Thus, \textit{dumpsys cpuinfo} will be used to measure CPU usage of mobile applications. 
 
@@ -628,30 +714,17 @@ This chapter presented the method used to find a relevant metric to compare the 
 
 \chapter{Results}
 
-\todo[inline, color=green]{It is important that the RQs appear here and that the results answer the RQs}
+%\todo[inline, color=green]{It is important that the RQs appear here and that the results answer the RQs}
 
 This study aims at comparing the smoothness, the memory performance and the CPU usage of Mobile and Progressive Web Apps. To this end, the accuracy of Chrome's Devtools CPU sampling method was tested, and a model of Chrome's rendering pipeline was built. 
-Firstly, we will present the results of the experiment conducted to select a tool able to extract the CPU usage of Progressive Web Apps. Then, we will describe the resulting model of Chrome's rendering pipeline and the smoothness metric deducted from it. Finally, we will outline the results of the performance experiments and answer the research questions.  
+Firstly, we will describe the resulting model of Chrome's rendering pipeline and the smoothness metric deducted from it. Then, we will present the results of the experiment conducted to select a tool able to extract the CPU usage of Progressive Web Apps. Finally, we will outline the results of the performance experiments and answer the research questions.  
 %This chapter will present the results of the experiments described in the previous part. It includes the empirical model of Chrome's rendering pipeline, the smoothness metric derived from it, the results of the experiments regarding CPU usage and lastly, the smoothness performance of Mobile Applications and Progressive Web Apps.
 
-\todo[inline, color=green!40]{this preliminary experiment to select the device can be part of the previous chapter}
+%\todo[inline, color=green!40]{this preliminary experiment to select the device can be part of the previous chapter}
 
-\section{Measuring the CPU usage of Progressive Web Apps}
-\label{results:cpu}
-Since the CPU usage of PWA measured by \textit{dumpsys cpuinfo} may contain browser tasks that have nothing to do with the PWA, other measurement methods provided by Chrome were considered. One of them is the CPU sampling method executed by Chrome DevTools performance panel during a recording. 
-Different CPU workloads were simulated with a function called at different time intervals. The CPU usage for each workload is the average of 100 measurements. The results are presented in \autoref{fig:cpu_usage}.
+%\todo[inline]{Present the results in the same order that the RQ are formulated}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=13cm]{kththesis/Figures/cpu_graph.JPG}
-    \caption[Measurements of CPU Usage of PWA]{Measured CPU usage (\%) over CPU workload represented by time laps between function calls}
-    \label{fig:cpu_usage}
-\end{figure}
-
-As was expected, the CPU usage of the Renderer process (where the application lives) and the GPU Process decrease with the frequency of the function call. The CPU usage of the Browser process, though small, also decreases. This is surprising as the function call used to emulate CPU workloads did not involve the Browser in any way. This indicates that the Browser process is necessary to run the PWA and not only at launch-time, to make network requests or to display a graphic element belonging to the Browser.
-
-\paragraph{}
-The curve of the CPU usage measured by Chrome's CPU sampling is closest to the curve of the CPU usage measured by \textit{dumpsys cpuinfo}. This indicates that it is a good estimation of the CPU usage of Chrome. However, it surpasses the measurements taken by \textit{dumpsys cpuinfo}. As the latter takes its measurements from the system files which count every tick of the CPU, it gives an accurate measurement of the CPU usage of Chrome. The Progressive Web App which is run by Chrome cannot exceed its CPU usage. Thus, the CPU sampling method of Chrome is less accurate than \textit{dumpsys cpuinfo} to measure the CPU usage of a PWA. Later measurements of CPU will all be given by \textit{dumpsys cpuinfo}.
+%\todo[inline]{Write the takeaways explicitly for each research question.}
 
 \section{Smoothness metric}
 
@@ -733,157 +806,199 @@ The last possible comparison is the amount of time Chrome and Android spent on c
     \item \textbf{Do frames which only changes the Browser surface count as frames to compare to mobile applications on Android?} \newline
     The Browser surface represents on PWA what is usually also handled by the application on Android (scrollbar, refresh animation). Thus, those frames will also be compared to Android frames. 
     \item \textbf{When both the App surface and the Browser surface changes, what to consider the start of the frame?} \newline
-    Since they are pushed to SurfaceFlinger as a single frame, the start of the frame will be the start of the Browser or the App surface depending on which happens the earliest. 
+    Since they are pushed to SurfaceFlinger as a single frame, the start of the frame will be the start of the Browser or the App surface depending on which happens the earliest.
 \end{enumerate}
 
 \paragraph{}
-Therefore, Android and Chrome frames will be compared with their duration, that is from the time Android and Chrome start actively computing the frame until the buffers are swapped. 
+Therefore, Android and Chrome frames will be compared with their duration, that is from the time Android and Chrome start actively computing the frame until the buffers are swapped.
 
-\section{Smoothness Performance}
+%\todo[inline]{Memory is first than CPU in the RQs}
 
-To compare the smoothness performance of Native, Hybrid and Progressive Web Applications, the average frame duration as defined in \autoref{results:metric}, the CPU and the Memory usage were measured in 4 different scenarios: 
+\section{Measuring the CPU usage of Progressive Web Apps}
+\label{results:cpu}
+Since the CPU usage of PWA measured by \textit{dumpsys cpuinfo} may contain browser tasks that have nothing to do with the PWA, other measurement methods provided by Chrome were considered. One of them is the CPU sampling method executed by Chrome DevTools performance panel during a recording. 
+Different CPU workloads were simulated with a function called at different time intervals. The CPU usage for each workload is the average of 100 measurements. The results are presented in \autoref{fig:cpu_usage}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=13cm]{kththesis/Figures/cpu_graph.JPG}
+    \caption[Measurements of CPU Usage of PWA]{Measured CPU usage (\%) over CPU workload represented by time laps between function calls}
+    \label{fig:cpu_usage}
+\end{figure}
+
+As was expected, the CPU usage of the Renderer process (where the application lives) and the GPU Process decrease with the frequency of the function call. The CPU usage of the Browser process, though small, also decreases. This is surprising as the function call used to emulate CPU workloads did not involve the Browser in any way. This indicates that the Browser process is necessary to run the PWA and not only at launch-time, to make network requests or to display a graphic element belonging to the Browser.
+
+\paragraph{}
+The curve of the CPU usage measured by Chrome's CPU sampling is closest to the curve of the CPU usage measured by \textit{dumpsys cpuinfo}. This indicates that it is a good estimation of the CPU usage of Chrome. However, it surpasses the measurements taken by \textit{dumpsys cpuinfo}. As the latter takes its measurements from the system files which count every tick of the CPU, it gives an accurate measurement of the CPU usage of Chrome. The Progressive Web App which is run by Chrome cannot exceed its CPU usage. Thus, the CPU sampling method of Chrome is less accurate than \textit{dumpsys cpuinfo} to measure the CPU usage of a PWA. Later measurements of CPU will all be given by \textit{dumpsys cpuinfo}.
+
+\section{Performance evaluation}
+\label{results:performance}
+
+To compare the smoothness performance of Native, Hybrid and Progressive Web Applications, the average frame duration as defined in \autoref{results:metric}, the memory and the CPU usage were measured in 4 different scenarios: 
+
 \begin{enumerate} [ref={Scenario}\xspace\arabic*]
-    \item \label{scenario:text:changing} Changing a text (\autoref{tab:text:changing})
-    \begin{table}[]
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-             & Native & Hybrid & PWA \\
-             \hline
-            \textbf{Samsung S6} &   &   &   \\
-            Frame (ms) & 16,50 & 13,46 & 27,62 \\
-            CPU (\%core) & 7,97 & 59,59 & 28,28 \\
-            Memory (MB) & 68 & 196 & 257 \\
-            \hline   
-            \textbf{Samsung S5} &   &   &   \\
-            Frame (ms) & 14,38 & 10,43 & 21,99 \\
-            CPU (\%core) & 3,63 & 44,89 & 15,09 \\
-            Memory (MB) & 47 & 169 & 148 \\
-            \hline
-            \textbf{Huawei P9 Lite} &   &   &   \\
-            Frame (ms) & 10,47 & 6,50 & 22,47 \\
-            CPU (\%core) & 4,03 & 31,44 & 22,35 \\
-            Memory (MB) & 50 & 243 & 276 \\
-            \hline
-        \end{tabular}
-        \caption{Changing a text}
-        \label{tab:text:changing}
-    \end{table}
-
-    \item \label{scenario:text:scrolling} Scrolling a text (\autoref{tab:text:scrolling})
-    \begin{table}[]
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-             & Native & Hybrid & PWA \\
-             \hline
-            \textbf{Samsung S6} &   &   &   \\
-            Frame (ms) & 17,32 & 18,40 & 24,71 \\
-            CPU (\%core) & 40,13 & 90,03 & 105,63 \\
-            Memory (MB) & 77 & 377 & 179 \\
-            \hline   
-            \textbf{Samsung S5} &   &   &   \\
-            Frame (ms) & 3,85 & 5,19 & 21,96 \\
-            CPU (\%core) & 28,57 & 59,42 & 66,86 \\
-            Memory (MB) & 49 & 341 & 243 \\
-            \hline
-            \textbf{Huawei P9 Lite} &   &   &   \\
-            Frame (ms) & 4,46 & 6,81 & 22,09 \\
-            CPU (\%core) & 20,18 & 73,55 & 105,33 \\
-            Memory (MB) & 55 & 406 & 149 \\
-            \hline
-        \end{tabular}
-        \caption{Scrolling a text}
-        \label{tab:text:scrolling}
-    \end{table}
-    \item \label{scenario:picture:changing} Changing a picture (\autoref{tab:picture:changing})
-    \begin{table}[]
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-             & Native & Hybrid & PWA \\
-             \hline
-            \textbf{Samsung S6} &   &   &   \\
-            Frame (ms) & 9,66 & 9,48 & 17,86 \\
-            CPU (\%core) & 9,09 & 57,82 & 25,66 \\
-            Memory (MB) & 87 & 300 & 349 \\
-            \hline   
-            \textbf{Samsung S5} &   &   &   \\
-            Frame (ms) & 17,04 & 7,83 & 15,67 \\
-            CPU (\%core) & 8,41 & 44,36 & 11,56 \\
-            Memory (MB) & 56 & 265 & 193 \\
-            \hline
-            \textbf{Huawei P9 Lite} &   &   &   \\
-            Frame (ms) & 10,07 & 4,83 & 13,07 \\
-            CPU (\%core) & 8,99 & 32,09 & 19,36 \\
-            Memory (MB) & 56 & 317 & 316 \\
-            \hline
-        \end{tabular}
-        \caption{Changing a picture}
-        \label{tab:picture:changing}
-    \end{table}
-    \item \label{scenario:picture:scrolling} Scrolling pictures (\autoref{tab:picture:Scrolling})
-    \begin{table}[]
-        \centering
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-             & Native & Hybrid & PWA \\
-             \hline
-            \textbf{Samsung S6} &   &   &   \\
-            Frame (ms) & 13,36 & 17,44 & 24,31 \\
-            CPU (\%core) & 34 & 106,68 & 102,65 \\
-            Memory (MB) & 106 & 578 & 182 \\
-            \hline   
-            \textbf{Samsung S5} &   &   &   \\
-            Frame (ms) & 3,38 & 4,62 & 21,31 \\
-            CPU (\%core) & 37,21 & 60,35 & 66,35 \\
-            Memory (MB) & 104 & 283 & 243 \\
-            \hline
-            \textbf{Huawei P9 Lite} &   &   &   \\
-            Frame (ms) & 4,57 & 7,63 & 22,31 \\
-            CPU (\%core) & 51,13 & 116,37 & 119,17 \\
-            Memory (MB) & 97 & 614 & 154 \\
-            \hline
-        \end{tabular}
-        \caption{Scrolling pictures}
-        \label{tab:picture:Scrolling}
-    \end{table}
+    \item \label{scenario:text:changing} Changing a text
+    \item \label{scenario:text:scrolling} Scrolling a text
+    \item \label{scenario:picture:changing} Changing a picture
+    \item \label{scenario:picture:scrolling} Scrolling pictures
 \end{enumerate}
 
-First, we will mention some issues that were raised during and after the experiments. Then, we will present several observations that can be made from result. \newline
-
-\subsection{Experiment notes}
 The results presented here are the average of 100 measures. However, some small issues were raised during and after the experiments.\newline
 Firstly, the scrolling experiments were not as consistent between frameworks and devices as changing content was. The same drag event did not trigger the same scrolling speed, and the length of the scrolling page was different. The tools used to simulate drag events also behaved  differently. Thus, the drag events were adapted to the device and framework so that the view scrolled all the way down and a little up during the experiments. \newline
 Lastly, the clocks of different threads in Chrome were sometimes found to be slightly out of sync. Thus, some events were detected before their triggering events on another thread. However, those incidents concerned events not counted in the frame duration. They were scarce and the delay was of small magnitude. Thus, it was concluded that they did not impact the results presented here.
 
-\subsection{Takeaways}
-\label{results:performance}
-The first observation is the difference of frame computation time of the same application between devices. In both Scrolling scenarios (\autoref{tab:picture:Scrolling} \autoref{tab:text:scrolling}), the Native and Hybrid applications takes 3 or 4 times more time to compute a frame on Samsung S6 than on Samsung S5 and Huawei. The difference is less significant on Changing Scenarios though a two-times magnitude difference can still be observed. PWAs also offer a more consistent smoothness over devices.
+\subsection{Smoothness performance}
+
+The average frame duration presented in \autoref{tab:smoothness} is the amount of time the applications compute the frames and send them to SurfaceFlinger. The smaller this time is, the faster the application can render frames and the more it can perform other actions between frames (handle user input, fetch data, optimize computations). 
+
+\begin{table}[h]
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c||}
+         \hline
+         & Changing a text & Scrolling a text & Changing a picture & Scrolling pictures \\
+         \hline
+         \textbf{Native} & & & & \\
+         Samsung S6 & 16,50 & 17,32 & 9,66 & 13,36 \\
+         Samsung S5 & 14,38 & 3,85 & 17,04 & 3,38 \\
+         Huawei P9-Lite & 10,47 & 4,46 & 10,07 & 4,57 \\
+         \hline
+         \textbf{Hybrid} & & & & \\
+         Samsung S6 & 13,46 & 18,40 & 9,48 & 17,44 \\
+         Samsung S5 & 10,43 & 5,19 & 7,83 & 4,62 \\
+         Huawei P9-Lite & 6,50 & 6,81 & 4,83 & 7,63 \\
+         \hline
+         \textbf{PWA} & & & & \\
+         Samsung S6 & 27,62 & 24,71 & 17,86 & 24,31 \\
+         Samsung S5 & 21,99 & 21,96 & 15,67 & 21,31 \\
+         Huawei P9-Lite & 22,47 & 22,09 & 13,07 & 22,31 \\
+         \hline
+    \end{tabular}
+    }
+    \caption{Average frame rendering duration (ms)}
+    \label{tab:smoothness}
+\end{table}
+
+\paragraph{}
+Firstly, we can notice a difference of performance of the Native and Hybrid application between devices. In both Scrolling scenarios, they take 3 or 4 times more time to compute a frame on Samsung S6 than on Samsung S5 and Huawei. The difference is less significant on Changing Scenarios though a two-times magnitude difference can still be observed. This difference is not visible on the Progressive Webb Application which offers a more consistent smoothness. 
+
+\paragraph{}
+Secondly, it was expected that scrolling would result in smaller frames duration in Progressive Web Apps as the 'fast path' is taken more often. This is true when displaying text, though the difference is small, but not at all when displaying pictures. 
+
+\paragraph{}
+Lastly, the average frame duration of the Progressive Web App is well above the Native and Hybrid applications in every scenarios except on one device when changing pictures. The difference can be significant and attain 10 ms and more in several cases. 
+
+\iffalse
+The first observation is the difference of performance of the same application between devices. In both Scrolling scenarios, the Native and Hybrid applications takes 3 or 4 times more time to compute a frame on Samsung S6 than on Samsung S5 and Huawei. The difference is less significant on Changing Scenarios though a two-times magnitude difference can still be observed. However, the progressive Web App offers a more consistent smoothness between devices.
 \paragraph{}
 The second observation concerns only the Progressive Web App. With the metric defined in \autoref{results:metric}, it was expected that scrolling would result in smaller frame computation times for PWA. This is true when displaying text though the difference is small, but not at all when displaying pictures. 
+\fi
+
+\subsection{Memory performance}
+
+The memory performance is an important performance parameter in mobile applications as this memory is limited. It is evaluated using the amount of RAM used by the applications just after the running a scenario. We can make several observations from the results presented in \autoref{tab:memory}. 
+
+\begin{table}[h]
+    \centering
+    
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|}
+         \hline
+         & Changing a text & Scrolling a text & Changing a picture & Scrolling pictures \\
+         \hline
+         \textbf{Native} & & & & \\
+         Samsung S6 & 68 & 77 & 87 & 106 \\
+         Samsung S5 & 47 & 49 & 56 & 104 \\
+         Huawei P9-Lite & 50 & 55 & 56 & 97 \\
+         \hline
+         \textbf{Hybrid} & & & & \\
+         Samsung S6 & 196 & 377 & 300 & 578 \\
+         Samsung S5 & 169 & 341 & 265 & 283 \\
+         Huawei P9-Lite & 243 & 406 & 317 & 614 \\
+         \hline
+         \textbf{PWA} & & & & \\
+         Samsung S6 & 257 & 179 & 349 & 182 \\
+         Samsung S5 & 148 & 243 & 193 & 243 \\
+         Huawei P9-Lite & 276 & 149 & 316 & 154 \\
+         \hline
+    \end{tabular}
+    }
+    \caption{Average memory usage (MB)}
+    \label{tab:memory}
+\end{table}
 
 \paragraph{}
+The first observation is the wide gap between the memory used by the Native Application, and the Hybrid and Progressive Web App. The Native application consumes at most 106 MB across all devices and scenarios, while the PWA and Hybrid app consumes at least 148 MB and often around 250-300 MB.
+
+\paragraph{}
+The second observation is the memory used in each scenarios. As expected, displaying pictures requires more memory than text, either when changing content or scrolling. Scrolling consumes more memory than changing content on both the Native and the Hybrid applications, and on the Progressive Web App on Samsung S5. However, it is the other way around for the PWA on Samsung S6 and Huawei P9-Lite: changing the content requires more memory than scrolling. 
+
+\paragraph{}
+The last observation is the comparison between the Hybrid and Progressive Web Application. The difference between them can be significant in the scrolling scenarios with the Hybrid consuming twice as much memory as the PWA, sometimes more. It is marginal in the changing content scenarios with the PWA consuming slightly more than the Hybrid application. 
+
+\iffalse
+\paragraph{}
+The second observation is the difference observed between the scenarios in the Hybrid and Progressive Web applications, though the rank of the scenarios is not consistent between devices. The Hybrid application consumes the most memory on Samsung S5 when scrolling a text, and on Samsung S6 and Huawei P9-Lite when scrolling pictures. The Progressive Web App consumes the most when changing pictures on Samsung S6 and Huawei P9-Lite, and when scrolling (either text or pictures) on Samsung S5.  
+
 The third observation concerns the memory used by the applications. The Native application consumes significantly less CPU and Memory than the Hybrid and Progressive Web Application in every scenario. On the one hand, the Native application consumes only around 50 MB of RAM, 100 MB at most when scrolling pictures. On the other hand, the PWA and Hybrid app consumes at least 150 MB of RAM and even up to 600 MB for the Hybrid application.
+\fi
+
+\subsection{CPU Usage}
+
+The CPU on mobile phones is a limited resources. The more an application consumes, the less work can be done on the background and the more energy it consumes. We can make several observations from the results presented in \autoref{tab:cpu}  
+
+\begin{table}[h]
+    \centering
+    
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|}
+         \hline
+         & Changing a text & Scrolling a text & Changing a picture & Scrolling pictures \\
+         \hline
+         \textbf{Native} & & & & \\
+         Samsung S6 & 7,97 & 40,13 & 9,09 & 34 \\
+         Samsung S5 & 3,63 & 28,57 & 8,41 & 37,21 \\
+         Huawei P9-Lite & 4,03 & 20,18 & 8,99 & 51,13 \\
+         \hline
+         \textbf{Hybrid} & & & & \\
+         Samsung S6 & 59,59 & 90,03 & 57,82 & 106,68 \\
+         Samsung S5 & 44,89 & 59,42 & 44,36 & 60,35 \\
+         Huawei P9-Lite & 31,44 & 73,55 & 32,09 & 116,37 \\
+         \hline
+         \textbf{PWA} & & & & \\
+         Samsung S6 & 28,28 & 105,63 & 25,66 & 102,65 \\
+         Samsung S5 & 15,09 & 66,86 & 11,56 & 66,35 \\
+         Huawei P9-Lite & 22,35 & 105,33 & 19,36 & 119,17 \\
+         \hline
+    \end{tabular}
+    }
+    \caption{Average CPU usage (\% CPU core)}
+    \label{tab:cpu}
+\end{table}
+
+Again, the first observation is the difference of performance between the Native application and the Hybrid and PWA. On one hand, the Native application consumes less than 10\% CPU when changing the content, and no more than 50\% CPU when scrolling. On the other hand, the Hybrid application consumes at least 44\% CPU and up to 116\% CPU when scrolling. The Progressive Web Application, though it can consume the CPU efficiently, also attain 100\% CPU in some cases.
 
 \paragraph{}
-The difference of CPU consumption is not as big as the memory performance, but still significant with a 2 times magnitude difference between the Native and the Hybrid and PWA, sometimes more. The Hybrid application consumes slightly less CPU than the PWA during scrolling, while the PWA consumes less CPU than the Hybrid app when changing content. 
+Not surprisingly, all applications consumes more CPU when scrolling than when changing content. However, displaying pictures does not always consume more CPU than displaying text. We can see pictures consuming less than text on the Hybrid application when changing content, though the difference is small, and especially on the Progressive Web App. 
 
 \paragraph{}
+The last observation concerns the comparison between the Hybrid and Progressive Web Application. One one hand, the PWA consumes noticeably less CPU than the Hybrid app when changing content, often half as much. On the other hand, it consumes slightly more when scrolling content though the difference is usually than 10\%. 
+
+\iffalse
 The last observation is a comparison of the Native and Hybrid applications. The performance of the Hybrid application is better when changing content while the Native application is better when scrolling. However, the Hybrid application only follows it by 2 or 3ms during a scroll, while the Native application can lag behind the Hybrid app by up to 10 ms. 
+\fi
 
-\subsection{Research questions}
+\section{Research questions}
 In almost every experiment, the PWA took to compute new frames and often by 2 or 3 times the amount of time it took for the Native and Hybrid App. Thus, we can conclude that Progressive Web Application are not as smooth as Mobile Applications.
 
 \paragraph{}
-The Progressive Web App consumed more memory than the Native application in every scenario, with the difference ranging from 58\% to 464\%. However, the Hybrid application consumed similar amount of memory than the PWA when changing content, and a lot more than the PWA when scrolling. Hence, though the memory performance of Progressive Web Apps do not compare to Native applications, it is similar or even better depending on the interaction to Hybrid applications.
+The Progressive Web App consumed more memory than the Native application in every scenario, with the difference ranging from 58\% to 464\%. However, the Hybrid application consumed similar amount of memory than the PWA when changing content, and a lot more than the PWA when scrolling. Hence, though the memory performance of Progressive Web Apps do not compare to Native applications, it is similar or even better than Hybrid applications depending on the interaction.
 
 \paragraph{}
 The conclusion to the CPU usage of Mobile and Progressive Web App is similar to the memory consumption. In every scenario, the Progressive Web App consumed more CPU than the native application though the difference is not as big as the memory consumption. However, it also consumed similar amount of CPU than the Hybrid application when scrolling, and less when changing content. Thus, Progressive Web Apps can be considered better than Hybrid applications in terms of CPU usage, but worse than Native applications 
 
-
 \paragraph{}
-This chapter evaluated the CPU sampling method of Chrome DevTools, described the model of Chrome's rendering pipeline used to compare the smoothness of PWA and Mobile applications on Android and finally presented the results of the experiments conducted to compare the smoothness, memory performance and CPU usage of Progressive Web Apps and Mobile applications. The next chapter will discuss those last results and the limitations of the conclusions.
+This chapter described the model of Chrome's rendering pipeline used to compare the smoothness of PWA and Mobile applications on Android, evaluated the CPU sampling method of Chrome DevTools, and finally presented the results of the experiments conducted to compare the smoothness, memory performance and CPU usage of Progressive Web Apps and Mobile applications. The next chapter will discuss those last results and the limitations of the conclusions.
 %To summarize the results presented in this chapter, it was found that the CPU usage measured by Chrome tools is not as accurate as Android tools and that Android emulators are not precise enough to use them in CPU experiments. A smoothness metric able to compare Mobile applications and Progressive Web app was defined and used to compare a Hybrid, a Native and a Progressive Web Application. The next chapter will discuss those results.
 
 
@@ -891,15 +1006,17 @@ This chapter evaluated the CPU sampling method of Chrome DevTools, described the
 
 In the last chapter, we presented several results about the CPU sampling method of Chrome DevTools, the model of Chrome's rendering pipeline built empirically, the smoothness metric defined according to the model and the evaluation of the smoothness, the memory performance and the CPU usage and Mobile and Progressive Web Apps. This chapter will discuss those results and present their limitations.
 %The last chapter presented the results of several experiments regarding measurements of CPU for PWA and smoothness performance. This chapter will discuss those results and their limitations.
-\section{CPU usage of Progressive Web App}
-We identified 2 different methods to evaluate the CPU usage of Progressive Web App running in Chrome: the CPU sampling method of Chrome DevTools and the CPU usage of all processes involved in the Progressive Web App measured by \textit{dumpsys cpuinfo}. We found that the measurements of \textit{dumpsys} were more accurate than Chrome DevTools despite the overhead caused by other tasks not related to the PWA. Though this overhead was minimized by conducting the experiment in airplane mode, with no WiFi and no other web app running in the background, it is still present in the results. 
+
 
 \section{Model and Smoothness metric}
 The smoothness metric used to compare Mobile and Progressive Web Applications was defined using an empirical model of Chrome's rendering pipeline. Though this model is not usable for every web applications, it is consistent with the events observed in simple web applications and allowed a comparison of the frames computed by Chrome and by Android framework. Since the start of a frame is not triggered by the same events on Chrome and Android, the frame duration is defined as the time it takes to compute a frame and push it to SurfaceFlinger. However, this metric was identified only for applications running with Chrome browser on Android. Other smoothness metrics might be used with other browsers and other OS. 
 
+\section{CPU usage of Progressive Web App}
+We identified 2 different methods to evaluate the CPU usage of Progressive Web App running in Chrome: the CPU sampling method of Chrome DevTools and the CPU usage of all processes involved in the Progressive Web App measured by \textit{dumpsys cpuinfo}. We found that the measurements of \textit{dumpsys} were more accurate than Chrome DevTools despite the overhead caused by other tasks not related to the PWA. Though this overhead was minimized by conducting the experiment in airplane mode, with no WiFi and no other web app running in the background, it is still present in the results. 
+
 \section{Smoothness}
-The smoothness performance of native, hybrid and progressive web applications was evaluated in 4 different scenarios as they triggered different stages of Chrome's rendering pipeline: changing a text, scrolling a text, changing pictures and scrolling pictures. In almost every scenario, the smoothness of the Progressive Web App was found to be lagging behind those of native and hybrid applications, often by a 2-time magnitude.\newline
-Contrary to what was expected, the frame computation time of Progressive Web Apps when changing a picture was a lot better than when scrolling pictures. As this is not observed when the content is text, this might be due to a better usage of the GPU, though this is only a hypothesis. \newline
+The smoothness performance of native, hybrid and progressive web applications was evaluated in 4 different scenarios as they triggered different stages of Chrome's rendering pipeline: changing a text, scrolling a text, changing pictures and scrolling pictures. In almost every scenario, the smoothness of the Progressive Web App was found to be lagging behind those of native and hybrid applications, often by a 2-times magnitude.\newline
+Contrary to what was expected, the frame computation time of Progressive Web Apps when changing a picture was a lot smaller than when scrolling pictures. As this is not observed when the content is text, this might be due to a better usage of the GPU, though this is only a hypothesis. \newline
 The Native and Hybrid application have similar results. The Hybrid app is faster at computing frames when changing the content displayed than the Native application, and slower when scrolling the view. As the difference is only of 2 or 3 ms during a scroll, and can attain 10 ms when changing content, the Hybrid application can be considered to be smoother than the Native application.
 
 

@@ -617,6 +617,143 @@ In Scenario 3 (\autoref{tab:picture:changing}), the Hybrid application is faster
 
 %However, the measurements for the progressive web app can be considered less accurate than the mobile applications as the browser could be performing tasks in the background unrelated to the progressive web app. The same reasoning can be applied for the memory usage. To maximize the accuracy of the results, the experiments were conducted in airplane mode without internet connection, and no other web page were opened. Nonetheless, the native application was found to be largely more efficient than the hybrid and progressive web application, both in terms of CPU and Memory usage. 
 
+\chapter{Results}
+\iffalse
+\section{Smoothness Performance}
+
+To compare the smoothness performance of Native, Hybrid and Progressive Web Applications, the average frame duration as defined in \autoref{results:metric}, the CPU and the Memory usage were measured in 4 different scenarios: 
+\begin{enumerate} [ref={Scenario}\xspace\arabic*]
+    \item \label{scenario:text:changing} Changing a text (\autoref{tab:text:changing})
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+             & Native & Hybrid & PWA \\
+             \hline
+            \textbf{Samsung S6} &   &   &   \\
+            Frame (ms) & 16,50 & 13,46 & 27,62 \\
+            CPU (\%core) & 7,97 & 59,59 & 28,28 \\
+            Memory (MB) & 68 & 196 & 257 \\
+            \hline   
+            \textbf{Samsung S5} &   &   &   \\
+            Frame (ms) & 14,38 & 10,43 & 21,99 \\
+            CPU (\%core) & 3,63 & 44,89 & 15,09 \\
+            Memory (MB) & 47 & 169 & 148 \\
+            \hline
+            \textbf{Huawei P9 Lite} &   &   &   \\
+            Frame (ms) & 10,47 & 6,50 & 22,47 \\
+            CPU (\%core) & 4,03 & 31,44 & 22,35 \\
+            Memory (MB) & 50 & 243 & 276 \\
+            \hline
+        \end{tabular}
+        \caption{Changing a text}
+        \label{tab:text:changing}
+    \end{table}
+
+    \item \label{scenario:text:scrolling} Scrolling a text (\autoref{tab:text:scrolling})
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+             & Native & Hybrid & PWA \\
+             \hline
+            \textbf{Samsung S6} &   &   &   \\
+            Frame (ms) & 17,32 & 18,40 & 24,71 \\
+            CPU (\%core) & 40,13 & 90,03 & 105,63 \\
+            Memory (MB) & 77 & 377 & 179 \\
+            \hline   
+            \textbf{Samsung S5} &   &   &   \\
+            Frame (ms) & 3,85 & 5,19 & 21,96 \\
+            CPU (\%core) & 28,57 & 59,42 & 66,86 \\
+            Memory (MB) & 49 & 341 & 243 \\
+            \hline
+            \textbf{Huawei P9 Lite} &   &   &   \\
+            Frame (ms) & 4,46 & 6,81 & 22,09 \\
+            CPU (\%core) & 20,18 & 73,55 & 105,33 \\
+            Memory (MB) & 55 & 406 & 149 \\
+            \hline
+        \end{tabular}
+        \caption{Scrolling a text}
+        \label{tab:text:scrolling}
+    \end{table}
+    \item \label{scenario:picture:changing} Changing a picture (\autoref{tab:picture:changing})
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+             & Native & Hybrid & PWA \\
+             \hline
+            \textbf{Samsung S6} &   &   &   \\
+            Frame (ms) & 9,66 & 9,48 & 17,86 \\
+            CPU (\%core) & 9,09 & 57,82 & 25,66 \\
+            Memory (MB) & 87 & 300 & 349 \\
+            \hline   
+            \textbf{Samsung S5} &   &   &   \\
+            Frame (ms) & 17,04 & 7,83 & 15,67 \\
+            CPU (\%core) & 8,41 & 44,36 & 11,56 \\
+            Memory (MB) & 56 & 265 & 193 \\
+            \hline
+            \textbf{Huawei P9 Lite} &   &   &   \\
+            Frame (ms) & 10,07 & 4,83 & 13,07 \\
+            CPU (\%core) & 8,99 & 32,09 & 19,36 \\
+            Memory (MB) & 56 & 317 & 316 \\
+            \hline
+        \end{tabular}
+        \caption{Changing a picture}
+        \label{tab:picture:changing}
+    \end{table}
+    \item \label{scenario:picture:scrolling} Scrolling pictures (\autoref{tab:picture:Scrolling})
+    \begin{table}[]
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+             & Native & Hybrid & PWA \\
+             \hline
+            \textbf{Samsung S6} &   &   &   \\
+            Frame (ms) & 13,36 & 17,44 & 24,31 \\
+            CPU (\%core) & 34 & 106,68 & 102,65 \\
+            Memory (MB) & 106 & 578 & 182 \\
+            \hline   
+            \textbf{Samsung S5} &   &   &   \\
+            Frame (ms) & 3,38 & 4,62 & 21,31 \\
+            CPU (\%core) & 37,21 & 60,35 & 66,35 \\
+            Memory (MB) & 104 & 283 & 243 \\
+            \hline
+            \textbf{Huawei P9 Lite} &   &   &   \\
+            Frame (ms) & 4,57 & 7,63 & 22,31 \\
+            CPU (\%core) & 51,13 & 116,37 & 119,17 \\
+            Memory (MB) & 97 & 614 & 154 \\
+            \hline
+        \end{tabular}
+        \caption{Scrolling pictures}
+        \label{tab:picture:Scrolling}
+    \end{table}
+\end{enumerate}
+
+First, we will mention some issues that were raised during and after the experiments. Then, we will present several observations that can be made from result. \newline
+
+\subsection{Experiment notes}
+The results presented here are the average of 100 measures. However, some small issues were raised during and after the experiments.\newline
+Firstly, the scrolling experiments were not as consistent between frameworks and devices as changing content was. The same drag event did not trigger the same scrolling speed, and the length of the scrolling page was different. The tools used to simulate drag events also behaved  differently. Thus, the drag events were adapted to the device and framework so that the view scrolled all the way down and a little up during the experiments. \newline
+Lastly, the clocks of different threads in Chrome were sometimes found to be slightly out of sync. Thus, some events were detected before their triggering events on another thread. However, those incidents concerned events not counted in the frame duration. They were scarce and the delay was of small magnitude. Thus, it was concluded that they did not impact the results presented here.
+
+\subsection{Takeaways}
+\label{results:performance}
+The first observation is the difference of frame computation time of the same application between devices. In both Scrolling scenarios (\autoref{tab:picture:Scrolling} \autoref{tab:text:scrolling}), the Native and Hybrid applications takes 3 or 4 times more time to compute a frame on Samsung S6 than on Samsung S5 and Huawei. The difference is less significant on Changing Scenarios though a two-times magnitude difference can still be observed. PWAs also offer a more consistent smoothness over devices.
+\paragraph{}
+The second observation concerns only the Progressive Web App. With the metric defined in \autoref{results:metric}, it was expected that scrolling would result in smaller frame computation times for PWA. This is true when displaying text though the difference is small, but not at all when displaying pictures. 
+
+\paragraph{}
+The third observation concerns the memory used by the applications. The Native application consumes significantly less CPU and Memory than the Hybrid and Progressive Web Application in every scenario. On the one hand, the Native application consumes only around 50 MB of RAM, 100 MB at most when scrolling pictures. On the other hand, the PWA and Hybrid app consumes at least 150 MB of RAM and even up to 600 MB for the Hybrid application.
+
+\paragraph{}
+The difference of CPU consumption is not as big as the memory performance, but still significant with a 2 times magnitude difference between the Native and the Hybrid and PWA, sometimes more. The Hybrid application consumes slightly less CPU than the PWA during scrolling, while the PWA consumes less CPU than the Hybrid app when changing content. 
+
+\paragraph{}
+The last observation is a comparison of the Native and Hybrid applications. The performance of the Hybrid application is better when changing content while the Native application is better when scrolling. However, the Hybrid application only follows it by 2 or 3ms during a scroll, while the Native application can lag behind the Hybrid app by up to 10 ms. 
+
+
+\fi
 \chapter{Discussion}
 
 This may be due to the size of the frameworks used for the Hybrid and PWA, while the framework used in Native application is part of the OS and not the application.
