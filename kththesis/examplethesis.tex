@@ -51,7 +51,7 @@
 \titlepage
 
 \begin{abstract}    
-  One of the main challenges of mobile development lies in the high fragmentation of mobile platforms. Developers often need to develop the same application several times for all targeted platforms, raising the cost of development and maintenance. One solution to this problem is cross-platform development, which traditionally only includes mobile applications. However, a new approach introduced by Google in 2015 also includes web applications. Progressive Web Apps, as they are called, are web applications that can be installed on mobile and behave like mobile applications. This research aims at studying and comparing their performance to mobile applications on Android, especially in terms of smoothness. To that end, we analyzed the Rendering pipeline of Android and Chrome and deducted a smoothness metric. Then, a Progressive Web App, a Native Android and a React Native Hybrid Application were developed and their performance measured in several scenarios. The results imply that Progressive Web Applications, though they have great benefits, are not as smooth as Mobile applications on Android.
+  One of the main challenges of mobile development lies in the high fragmentation of mobile platforms. Developers often need to develop the same application several times for all targeted platforms, raising the cost of development and maintenance. One solution to this problem is cross-platform development, which traditionally only includes mobile applications. However, a new approach introduced by Google in 2015 also includes web applications. Progressive Web Apps, as they are called, are web applications that can be installed on mobile and behave like mobile applications. This research aims at studying and comparing their performance to mobile applications on Android, especially in terms of smoothness, memory and CPU usage. To that end, we analyzed the Rendering pipeline of Android and Chrome and deducted a smoothness metric. Then, a Progressive Web App, a Native Android and a React Native Interpreted Application were developed and their performance measured in several scenarios. The results imply that Progressive Web Applications, though they have great benefits, are not as smooth as Mobile applications on Android. Their memory performance and CPU usage lag behind Native Applications, but are similar to Interpreted applications. 
 \end{abstract}
 
 
@@ -93,7 +93,7 @@ However, no research has been conducted regarding the run-time performance of Pr
 This thesis will focus on several aspects of the run-time performance of Progressive Web Apps and aim at answering the following questions: 
 
 \begin{itemize}
-    \item \textbf{RQ1:} How does the smoothness of Progressive Web Apps compare to Mobile applications ? 
+    \item \textbf{RQ1:} How does the smoothness of Progressive Web Apps compare to Mobile applications? 
     
     \item \textbf{RQ2:} How does the memory performance of Progressive Web Apps compare to Mobile applications? 
     \item \textbf{RQ3:} How does the CPU usage of Progressive Web Apps compare to Mobile applications?
@@ -105,7 +105,7 @@ As Chrome browser holds more than 60\% of the browsers market share on mobile, t
 The global challenge behind these research questions is to collect relevant performance metrics. For this, we need different versions of an application running in a controlled environment, and tools that monitor the performance metrics.
 \paragraph{}
 We address the first challenge with 3 applications: a Native Android app, a cross-platform app developed with React Native and a Progressive Web App developed with ReactJS. 
-To address the second challenge, we investigate several techniques and tools. Many tools already exist to monitor the performance of mobile applications on Android. The challenge resides in monitoring the performance of Progressive Web Applications. For the memory performance, we inspect the usage of tools specific to mobile applications on Progressive Web Apps. For the CPU usage, we examined tools specific to web applications and compare them to mobile applications tools. For the smoothness performance, there was no frameworks or tools able to assess the smoothness of Progressive Web Apps at the time of writing.
+To address the second challenge, we investigate several techniques and tools. Many tools already exist to monitor the performance of mobile applications on Android. The challenge resides in monitoring the performance of Progressive Web Applications. For the memory performance, we inspect the usage of tools specific to mobile applications on Progressive Web Apps. For the CPU usage, we examined tools specific to web applications and compare them to mobile applications tools. For the smoothness performance, there were no frameworks or tools able to assess the smoothness of Progressive Web Apps at the time of writing.
 \paragraph{}
 The key technical contribution of this thesis consists in the elaboration of a model of Chrome frame rendering workflow and a tool \textit{FrameTracker} which follows the frames and extract key timestamps. They can be used by other developers to get detailed information of their web applications rendering process, and by other researchers 
 to understand more deeply the rendering process of web applications and compare it to mobile applications. 
@@ -124,7 +124,7 @@ to understand more deeply the rendering process of web applications and compare 
 The novelty of this work resides in several points. At the time of writing, no known research has studied the smoothness, the memory performance nor the CPU usage of Progressive Web Apps. Moreover, the method used to compare the smoothness of the applications has never been used before, as far as we know. The model of Chrome's rendering pipeline built empirically is also novel to the best of our knowledge.
 
 \paragraph{}
-Our experiments based on 3 applications, reveal that Progressive Web Apps are less smooth than Native and Hybrid applications on Android. The difference is significant and will be noticeable in applications requiring a high smoothness performance, for example games or heavy animations. However, the difference perceived by the end-user in simple applications remains to be studied. Meanwhile, PWAs and Hybrid applications have similar CPU and memory consumption. We observe a difference of 20\% in favor of Progressive Web Apps. However, the difference reach 200\% between Native and Progressive Web Apps, making the Native applications still the most performant in terms of resource consumption. 
+Our experiments based on 3 applications, reveal that Progressive Web Apps are less smooth than Native and Interpreted applications on Android. The difference is significant and will be noticeable in applications requiring a high smoothness performance, for example games or heavy animations. However, the difference perceived by the end-user in simple applications remains to be studied. Meanwhile, PWAs and Interpreted applications have similar CPU and memory consumption. We observe a difference of 20\% in favor of Progressive Web Apps. However, the difference reach 200\% between Native and Progressive Web Apps, making the Native applications still the most performant in terms of resource consumption. 
 
 \paragraph{}
 This work is structured as follows. \hyperref[ch:background]{Chapter 2} introduces the concepts and the academic background related to this research. \hyperref[ch:methodology]{Chapter 3} presents the methods used to overcome the different challenges and answer the research questions. \hyperref[ch:model]{Chapter 4} outlines the empirical model of the frame rendering workflow on Chrome. \hyperref[ch:results]{Chapter 5} describes the results obtained during this study. \hyperref[ch:discussion]{Chapter 6} discuss those results and \hyperref[ch:conclusion]{Chapter 7} concludes this work. 
@@ -346,7 +346,7 @@ Lastly, at the time of writing only two research papers examined the user experi
 The performance parameters used to compare mobile applications can differ greatly between studies. 
 
 \paragraph{}
-Biørn-Hansen, Grønli and Ghinea \cite{animation_performance} analyzed the metrics commonly used in animation performance evaluation: frames per second (FPS), CPU usage, device memory usage and GPU memory usage. They also used those metrics to evaluate the animation performance of several mobile applications developed in Native Android, Native iOS, React Native, Ionic and Xamarin. They concluded that FPS and GPU memory were not really useful to compare their performance, as the GPU memory did not change much between the animations and the FPS was not relevant to short-running animations like the ones they tested. The results suggests that React Native is the most performant cross-platform framework on Android while it is Ionic on iOS.
+Biørn-Hansen, Grønli and Ghinea \cite{animation_performance} analyzed the metrics commonly used in animation performance evaluation: frames per second (FPS), CPU usage, device memory usage and GPU memory usage. They also used those metrics to evaluate the animation performance of several mobile applications developed in Native Android, Native iOS, React Native, Ionic and Xamarin. They concluded that FPS and GPU memory were not really useful to compare their performance, as the GPU memory did not change much between the animations and the FPS was not relevant to short-running animations like the ones they tested. The results suggest that React Native is the most performant cross-platform framework on Android while it is Ionic on iOS.
 %However, they did not compare the performance of Native and Cross-platform frameworks.
 \paragraph{}
 Willocx et al. \cite{willocx2016comparing} evaluated the performance of 10 different cross-platform frameworks (divided between Javascript frameworks and source code translators) against native on iOS, Android and Windows Phone. The performance parameters used were the response time, the CPU usage, the disk space and the battery usage. Their reached several conclusions from their experiments. First, Javascript frameworks consumes the most CPU and memory, and launch the slowest. However, their response times are similar to native applications during run-time. Second, all Cross-platform frameworks use more persistent memory than the native applications. Third, the performance of cross-platform frameworks depends on the targeted platform and version. Lastly, they conclude that the performance overhead of cross-platform frameworks is acceptable, especially on high-end devices. 
@@ -363,7 +363,7 @@ Delia et al. \cite{delia2017approaches} evaluated the performance of Cross-platf
 Though some security issues need to be resolved \cite{Pride_Prejudice}, Progressive Web Apps have the potential to become a popular cross-platform solution for developing mobile applications. They do not add much complexity to a regular web app \cite{JohannsenFabian2018PWAa}, greatly reduce the cost of developing a mobile application for every platform, and have similar performance than mobile applications regarding launch time \cite{PWApossibleUnifer}\cite{Biorn-Hansen2} \cite{PWAapplicability}, energy consumption \cite{PWAapplicability}, user experience \cite{emulating_native_w_crossplatform}\cite{PWA_UX_comparison_study}, or even hardware access in some cases \cite{PWAbc_responsetime}. 
 \paragraph{}
 
-However, at the time of writing no study that examined the performance at run-time was found (except for energy consumption). This project will compare Android Native, Hybrid and Progressive Web Apps thanks to  several performance parameters, namely the smoothness (how fast the application can render new frames), the memory performance and the CPU usage. 
+However, at the time of writing no study that examined the performance at run-time was found (except for energy consumption). This project will compare Android Native, Interpreted and Progressive Web Apps thanks to  several performance parameters, namely the smoothness (how fast the application can render new frames), the memory performance and the CPU usage. 
 
 The smoothness of a video is usually evaluated using the FPS rate, or frames per second \cite{smooth_gui}. It is also one of the main metrics recommended by Android\footnote{https://developer.android.com/training/testing/performance} and Google\footnote{https://developers.google.com/web/tools/chrome-devtools/evaluate-performance} to analyze the run-time performance of an application.\newline
 However, this metric is not always considered relevant. Biørn-Hansen et al. \cite{animation_performance} examined several metrics used to evaluate animation performance in mobile application. They concluded that FPS was not a really useful information, especially for animations that runs only shortly and leave the application idle the rest of the time. Lin et al.\cite{smooth_gui} preferred to 
@@ -388,7 +388,7 @@ To answer the research questions outlined in the Introduction, we need to identi
 
 \subsection{Smoothness performance}
 
-The smoothness of an application according to Android is closely related to the \hyperref[def:frame]{frames} displayed by the application. If a frame takes too long to be rendered, the user might notice some stuttering where motions are visibly fragmented or freezing where the application halts for a long period of time, resulting in a poorer quality of the User Experience.
+The smoothness of an application according to Android\cite{app_smoothness} is closely related to the \hyperref[def:frame]{frames} displayed by the application. If a frame takes too long to be rendered, the user might notice some stuttering where motions are visibly fragmented or freezing where the application halts for a long time, resulting in a poorer quality of the User Experience.
 
 \paragraph{}
 The smoothness of web or mobile applications are often evaluated using the FPS rate that is the number of frames per second. However, as Biorn-Hansen et al. suggested\cite{animation_performance}, simply looking at the FPS rate is irrelevant of the smoothness of applications as the animations are sparse and run shortly. 
@@ -427,8 +427,8 @@ Thus, we will evaluate the CPU performance of the applications by the percentage
 
 \section{Metric collection}
 
-In the previous section, we defined relevant metrics able to evaluate the performance of Mobile and Progressive Web Applications. However, it is also necessary to collect them with enough accuracy. This section will discuss the methods used to extract those metrics on Native, Hybrid and Progressive Web Apps. 
-\subsection{Collect frame duration}
+In the previous section, we defined relevant metrics able to evaluate the performance of Mobile and Progressive Web Applications. However, it is also necessary to collect them with enough accuracy. This section will discuss the methods used to extract those metrics on Native, Interpreted and Progressive Web Apps. 
+\subsection{Frame duration}
 \label{method:smoothness}
 %\todo[inline]{Android (Explain the Android rendering pipeline as it is written in the chapter 3 now. Then how to collect the frame duration)PWA What is the model ? How to build the model, etc? How to collect the Answer how to compare data given the metric, for example, it can be using a binary operation,  "if data from A is greater than data from B then A is better than B"}
 
@@ -600,7 +600,7 @@ Building the model and the tool was an iterative process (see \autoref{fig:build
 After the model and the FrameTracker were built, we are able of collecting the frame rendering duration for PWA. This metric is defined as the time span from the start of the computation of the frame until it is passed on to SurfaceFlinger to be displayed on the screen \todo{TBD}. A smaller frame rendering duration means more time to handle input events and compute background tasks. Thus, the application with the smallest frame rendering duration will be considered the smoothest.
 \fi
 
-\subsection{Collect memory data}
+\subsection{Memory data}
 
 \paragraph{}
 The memory in mobile applications on Android is inspected with the service \textit{meminfo} of \textit{adb shell dumpsys}. Filtering with the application package name, it takes a snapshot of its memory and outputs detailed information about the memory used though we will only monitor the total amount of RAM used by the application.
@@ -613,7 +613,7 @@ The foreground section is the most useful. When a mobile application is running,
 Thus, the memory performance of the applications will be evaluated with the total amount of RAM used by the application, computed from the average of a 100 metric collection. For the Progressive Web Application, this measurement includes all processes involved when running the PWA: the Browser, the Renderer and the GPU processes. The application with the least memory consumption will be considered the most memory performant.
 
 
-\subsection{Collect CPU usage}
+\subsection{CPU usage}
 
 There are 2 command lines that can be used to measure CPU usage of mobile applications on Android: \textit{adb shell top} and \textit{adb shell dumpsys cpuinfo}. \textit{Top} is similar to the Linux command of the same name, but with limited options. On Android, it is not possible to change the display from percentage of total CPU available to percentage of CPU core. This makes it less accurate than \textit{dumpsys cpuinfo} which displays the percentage of CPU core. Thus, \textit{dumpsys cpuinfo} will be used to measure CPU usage of mobile applications. 
 
@@ -632,7 +632,7 @@ Having a high CPU usage for an application means a higher battery consumption an
 \subsection{Benchmark}
 \label{method:benchmark}
 
-A total of 3 benchmark applications were developed for this project: a Native Android app, a Hybrid app using React Native and a PWA using ReactJS. The frameworks React Native and ReactJS were chosen for the Hybrid and PWA because of their popularity and their similarity. Their common library 'react' and common architecture logic reduce the performance difference that can be introduced by the use of different frameworks.
+A total of 3 benchmark applications were developed for this project: a Native Android app, an Interpreted app using React Native and a PWA using ReactJS. The frameworks React Native and ReactJS were chosen for the Interpreted app and PWA because of their popularity and their similarity. Their common library 'react' and common architecture logic reduce the performance difference that can be introduced by the use of different frameworks.
 
 \paragraph{}
 Because of the empirical model of a frame rendering workflow identified and presented in \autoref{ch:model}, all the applications contain the same features: a Clicking screen where the user can change the content by clicking on the screen, a Scrolling screen where the user can scroll the page to see all the content available and a Home screen where the user can navigate to the Clicking or the Scrolling screen. The content can be changed from text to picture and vice-versa. The screenshots of the applications are available in figures \ref{fig:native_screens}, \ref{fig:hybrid_screens} and \ref{fig:pwa_screens}.
@@ -663,7 +663,7 @@ Because of the empirical model of a frame rendering workflow identified and pres
     \subcaptionbox{Scrolling - text}{\includegraphics[width=2.1cm]{kththesis/screenshots/hybrid_scrolling_text.png}}
     \hfill
     \subcaptionbox{Scrolling - picture}{\includegraphics[width=2.1cm]{kththesis/screenshots/hybrid_scrolling_picture.png}}
-    \caption{Hybrid application}
+    \caption{Interpreted application}
     \label{fig:hybrid_screens}
 \end{figure}
 
@@ -685,7 +685,7 @@ Because of the empirical model of a frame rendering workflow identified and pres
 \paragraph{}
 The experiments will test 4 different scenarios: changing a text, changing a picture, scrolling a text and scrolling pictures. The use of emulators were considered for the experiments, and their performance was tested against physical devices. The results of these tests are available on \autoref{annex:emulators}. Due to the inaccuracy of the emulators, the experiments will only take place on real devices: a Samsung S6 (Android version 7.0), a Samsung S5 (Android version 5.0) and a Huawei P9-Lite (Android version 7.0).
 \paragraph{}
-Because of the tools limitation, clicking will be recorded for 25s and scrolling for 3s before extracting a memory snapshot and the CPU usage of the recording time. All the metrics will be measured at the same time for the native and hybrid applications. For the Progressive Web Apps, the frames and the resources used will be measured in separate experiments in order to avoid the overhead that the trace recording might cause.
+Because of the tools limitation, clicking will be recorded for 25s and scrolling for 3s before extracting a memory snapshot and the CPU usage of the recording time. All the metrics will be measured at the same time for the native and interpreted applications. For the Progressive Web Apps, the frames and the resources used will be measured in separate experiments in order to avoid the overhead that the trace recording might cause.
 
 \paragraph{}
 In this chapter, we explored and identified relevant metrics to evaluate the smoothness, the memory performance and the CPU usage of Mobile and Progressive Web Apps, and presented the methods used to collect them. For the smoothness performance of Progressive Web App, that meant building an empirical model of Chrome frame rendering workflow as well as a tool to collect the frame rendering duration. The model of a frame rendering workflow, and the smoothness metric will be presented in details in the next chapter.
@@ -783,7 +783,7 @@ This chapter deeply described the model of Chrome frame rendering workflow and t
 \chapter{Results}
 \label{ch:results}
 
-This study aims at comparing the smoothness, the memory performance and the CPU usage of Mobile and Progressive Web Apps. To this end, 3 applications (Native, Hybrid and PWA) were developed and their performance monitored in 4 different scenarios: changing a text, scrolling a text, changing pictures, scrolling pictures. This chapter will describe the results of those experiments, computed from the average a 100 measurements. 
+This study aims at comparing the smoothness, the memory performance and the CPU usage of Mobile and Progressive Web Apps. To this end, 3 applications (Native, Interpreted and PWA) were developed and their performance monitored in 4 different scenarios: changing a text, scrolling a text, changing pictures, scrolling pictures. This chapter will describe the results of those experiments, computed from the average a 100 measurements. 
 
 \label{results:performance}
 
@@ -803,7 +803,7 @@ The frame rendering duration presented in \autoref{tab:smoothness} is the averag
          Samsung S5 & 14,38 & 3,85 & 17,04 & 3,38 \\
          Huawei P9-Lite & 10,47 & 4,46 & 10,07 & 4,57 \\
          \hline
-         \textbf{Hybrid} & \textbf{10,13} & \textbf{10,13} & \textbf{7,38} & \textbf{9,89} \\
+         \textbf{Interpreted} & \textbf{10,13} & \textbf{10,13} & \textbf{7,38} & \textbf{9,89} \\
          Samsung S6 & 13,46 & 18,40 & 9,48 & 17,44 \\
          Samsung S5 & 10,43 & 5,19 & 7,83 & 4,62 \\
          Huawei P9-Lite & 6,50 & 6,81 & 4,83 & 7,63 \\
@@ -821,10 +821,10 @@ The frame rendering duration presented in \autoref{tab:smoothness} is the averag
 \end{table}
 
 \paragraph{}
-Each column describes the results for one scenario : changing a text, scrolling a text, changing a picture and scrolling pictures. Each row describes the average result of each type of application (Native, Hybrid and PWA) and details the results for each physical device tested. The numbers in bold represent the average frame rendering duration of the whole cell, that is computed from all devices of the same application.
+Each column describes the results for one scenario : changing a text, scrolling a text, changing a picture and scrolling pictures. Each row describes the average result of each type of application (Native, Interpreted and PWA) and details the results for each physical device tested. The numbers in bold represent the average frame rendering duration of the whole cell, that is computed from all devices of the same application.
 
 \paragraph{}
-Firstly, we notice a difference of performance between devices even for the same scenario and application. This difference is significant especially for the Native application and the Hybrid application when scrolling a text or pictures (Columns 2 and 4). The Native application computes a new frame in 17,32 ms on Samsung S6 and less than 5 ms on Samsung S5 and Huawei when scrolling a text (Column 2), and in 13,36 ms on Samsung S6 and less than 5 ms when scrolling a picture (Column 4). We observe a similar gap with the Hybrid application, as scrolling a text (Column 2) results in 18,40 ms frame rendering time on Samsung S6 and respectively 5,19 ms and 6,81 ms on Samsung S5 and Huawei, and scrolling a picture (Column 4) results in 17,44 ms of frame rendering time on Samsung S6 and respectively 4,62 ms and 7,63 ms on Samsung S5 and Huawei. \newline
+Firstly, we notice a difference of performance between devices even for the same scenario and application. This difference is significant especially for the Native application and the Interpreted application when scrolling a text or pictures (Columns 2 and 4). The Native application computes a new frame in 17,32 ms on Samsung S6 and less than 5 ms on Samsung S5 and Huawei when scrolling a text (Column 2), and in 13,36 ms on Samsung S6 and less than 5 ms when scrolling a picture (Column 4). We observe a similar gap with the Interpreted application, as scrolling a text (Column 2) results in 18,40 ms frame rendering time on Samsung S6 and respectively 5,19 ms and 6,81 ms on Samsung S5 and Huawei, and scrolling a picture (Column 4) results in 17,44 ms of frame rendering time on Samsung S6 and respectively 4,62 ms and 7,63 ms on Samsung S5 and Huawei. \newline
 The difference is less important with the Progressive Web App as the biggest variation is 5 ms inside the same scenario. 
 
 %\paragraph{}
@@ -836,12 +836,12 @@ Secondly, it was expected that the scrolling scenarios (Column 2 and 4) would re
 %\paragraph{}
 %Lastly, the average frame duration of the Progressive Web App is well above the Native and Hybrid applications in every scenarios except when changing pictures (Column 3) on Samsung S5 as the Native app takes 17,04 ms and the PWA 15,67ms. The difference can be significant and attain 10 ms and more in several cases. 
 \paragraph{}
-Lastly, we observe that the average frame duration of the Progressive Web App is well above the Native and Hybrid applications in every scenarios. The difference varies from 10 to 15 ms when changing a text, scrolling a text or scrolling a picture (Columns 1, 2 and 4), and goes down to 3 ms when changing pictures (Column 3). 
+Lastly, we observe that the average frame duration of the Progressive Web App is well above the Native and Interpreted applications in every scenario. The difference varies from 10 to 15 ms when changing a text, scrolling a text or scrolling a picture (Columns 1, 2 and 4), and goes down to 3 ms when changing pictures (Column 3). 
 
 \paragraph{}
-In conclusion, the PWA took to compute more time to render new frames than the Mobile applications, and often by 2 or 3 times the amount of time it took for the Native and Hybrid App. Thus, we can conclude that Progressive Web Application are not as smooth as Mobile Applications.
+In conclusion, the PWA took to compute more time to render new frames than the Mobile applications, and often by 2 or 3 times the amount of time it took for the Native and Interpreted App. Thus, we can conclude that Progressive Web Application are not as smooth as Mobile Applications.
 
-\subsection{Memory performance}
+\section{Memory performance}
 
 The memory performance is an important performance parameter in mobile applications as this memory is limited. It is evaluated using the amount of RAM used by the applications just after the running a scenario. We can make several observations from the results presented in \autoref{tab:memory}. 
 
@@ -858,7 +858,7 @@ The memory performance is an important performance parameter in mobile applicati
          Samsung S5 & 47 & 49 & 56 & 104 \\
          Huawei P9-Lite & 50 & 55 & 56 & 97 \\
          \hline
-         \textbf{Hybrid} & \textbf{202,5} & \textbf{374,6} & \textbf{293,8} & \textbf{491,5}  \\
+         \textbf{Interpreted} & \textbf{202,5} & \textbf{374,6} & \textbf{293,8} & \textbf{491,5}  \\
          Samsung S6 & 196 & 377 & 300 & 578 \\
          Samsung S5 & 169 & 341 & 265 & 283 \\
          Huawei P9-Lite & 243 & 406 & 317 & 614 \\
@@ -875,35 +875,35 @@ The memory performance is an important performance parameter in mobile applicati
 \end{table}
 
 \paragraph{}
-Each column describes the average RAM consumption for one scenario : changing a text, scrolling a text, changing a picture and scrolling pictures. Each row describes the average result of each type of application (Native, Hybrid and PWA) and details the results for each physical device tested. The numbers in bold represent the average RAM consumption of the whole cell, that is computed from all devices of the same application.
+Each column describes the average RAM consumption for one scenario : changing a text, scrolling a text, changing a picture and scrolling pictures. Each row describes the average result of each type of application (Native, Interpreted and PWA) and details the results for each physical device tested. The numbers in bold represent the average RAM consumption of the whole cell, that is computed from all devices of the same application.
 
 \paragraph{}
-The first observation is the wide gap between the memory used by the Native Application, and the Hybrid and Progressive Web App. The Native application consumes at most 106 MB across all devices and scenarios, while the PWA and Hybrid app consumes at least 148 MB and on average 190 MB to 491 MB of RAM.
+The first observation is the wide gap between the memory used by the Native Application, and the Interpreted and Progressive Web App. The Native application consumes at most 106 MB across all devices and scenarios, while the PWA and Interpreted app consumes at least 148 MB and on average 190 MB to 491 MB of RAM.
 
 \paragraph{}
-As expected, displaying text (Column 1 and 2) consumes more memory than displaying picture (Column 3 and 4) for every scenario and device. The applications consume around 10.7 MB (Native), 91.3 MB (Hybrid) and 59.9 MB (PWA) more memory when changing pictures than when changing texts. Scrolling requires 41.8 MB (Native), 116.9 MB (Hybrid) and 2.9 MB more memory when the content are pictures rather than text. 
+As expected, displaying text (Column 1 and 2) consumes more memory than displaying picture (Column 3 and 4) for every scenario and device. The applications consume around 10.7 MB (Native), 91.3 MB (Interpreted) and 59.9 MB (PWA) more memory when changing pictures than when changing texts. Scrolling requires 41.8 MB (Native), 116.9 MB (Interpreted) and 2.9 MB more memory when the content are pictures rather than text. 
 
 \paragraph{}
-Scrolling content consumes more memory than changing it both for the Hybrid and Native application. We observe a difference of 5.1 MB (Native) and 172.1 MB (Hybrid) when the content is text, and 36.2 MB (Native) and 197.7 MB (Hybrid) when the content is picture. However, it is the other way around for the Progressive Web App as scrolling text requires 36.7 MB less RAM than changing text, and scrolling pictures requires 92.9 MB less RAM than changing pictures.
+Scrolling content consumes more memory than changing it both for the Interpreted and Native application. We observe a difference of 5.1 MB (Native) and 172.1 MB (Interpreted) when the content is text, and 36.2 MB (Native) and 197.7 MB (Interpreted) when the content is picture. However, it is the other way around for the Progressive Web App as scrolling text requires 36.7 MB less RAM than changing text, and scrolling pictures requires 92.9 MB less RAM than changing pictures.
 
 \paragraph{}
-Lastly, we notice that the PWA consumes less memory than the Hybrid application, except when changing text. However, the difference when changing text is quite small, 24.5 MB compared to other scenarios, 184.3 MB (scrolling text), 7.7 MB (changing pictures) and 298.3 MB (scrolling pictures). 
+Lastly, we notice that the PWA consumes less memory than the Interpreted application, except when changing text. However, the difference when changing text is quite small, 24.5 MB compared to other scenarios, 184.3 MB (scrolling text), 7.7 MB (changing pictures) and 298.3 MB (scrolling pictures). 
 
 \paragraph{}
-In conclusion, the Progressive Web App consumes more RAM than the Native application, but less than the Hybrid application. Thus, we can conclude that the memory performance Progressive Web App, though still far from Native applications, do compare to Hybrid applications and hence mobile applications. 
+In conclusion, the Progressive Web App consumes more RAM than the Native application, but less than the Interpreted application. Thus, we can conclude that the memory performance Progressive Web App, though still far from Native applications, do compare to Interpreted applications and hence mobile applications. 
 %\paragraph{}
-%The second observation is the memory used in each scenarios. As expected, displaying pictures (Column 3 and 4) requires more memory than text (Column 1 and 2), either when changing content or scrolling. Scrolling consumes more memory than changing content on both the Native and the Hybrid applications, and on the Progressive Web App on Samsung S5. However, it is the other way around for the PWA on Samsung S6 and Huawei P9-Lite: changing the content requires more memory than scrolling. 
-
-%\paragraph{}
-%The last observation is the comparison between the Hybrid and Progressive Web Application. The difference between them can be significant in the scrolling scenarios with the Hybrid consuming twice as much memory as the PWA, sometimes more. It is marginal in the changing content scenarios with the PWA consuming slightly more than the Hybrid application. 
+%The second observation is the memory used in each scenarios. As expected, displaying pictures (Column 3 and 4) requires more memory than text (Column 1 and 2), either when changing content or scrolling. Scrolling consumes more memory than changing content on both the Native and the Interpreted applications, and on the Progressive Web App on Samsung S5. However, it is the other way around for the PWA on Samsung S6 and Huawei P9-Lite: changing the content requires more memory than scrolling. 
 
 %\paragraph{}
-%The Progressive Web App consumed more memory than the Native application in every scenario, with the difference ranging from 58\% to 464\%. However, the Hybrid application consumed similar amount of memory than the PWA when changing content, and a lot more than the PWA when scrolling. Hence, we can conclude that though the memory performance of Progressive Web Apps do not compare to Native applications, it is similar or even better than Hybrid applications depending on the interaction.
+%The last observation is the comparison between the Interpreted and Progressive Web Application. The difference between them can be significant in the scrolling scenarios with the Interpreted consuming twice as much memory as the PWA, sometimes more. It is marginal in the changing content scenarios with the PWA consuming slightly more than the Interpreted application. 
+
+%\paragraph{}
+%The Progressive Web App consumed more memory than the Native application in every scenario, with the difference ranging from 58\% to 464\%. However, the Interpreted application consumed similar amount of memory than the PWA when changing content, and a lot more than the PWA when scrolling. Hence, we can conclude that though the memory performance of Progressive Web Apps do not compare to Native applications, it is similar or even better than Interpreted applications depending on the interaction.
 
 
-\subsection{CPU Usage}
+\section{CPU Usage}
 
-The CPU on mobile phones is a limited resources. The more an application consumes, the less work can be done on the background and the more energy it consumes. We can make several observations from the results presented in \autoref{tab:cpu}  
+The CPU on mobile phones is a limited resource. The more an application consumes, the less work can be done on the background and the more energy it consumes. We can make several observations from the results presented in \autoref{tab:cpu}  
 
 \begin{table}[h]
     \centering
@@ -918,7 +918,7 @@ The CPU on mobile phones is a limited resources. The more an application consume
          Samsung S5 & 3,63 & 28,57 & 8,41 & 37,21 \\
          Huawei P9-Lite & 4,03 & 20,18 & 8,99 & 51,13 \\
          \hline
-         \textbf{Hybrid} & & & & \\
+         \textbf{Interpreted} & & & & \\
          Samsung S6 & 59,59 & 90,03 & 57,82 & 106,68 \\
          Samsung S5 & 44,89 & 59,42 & 44,36 & 60,35 \\
          Huawei P9-Lite & 31,44 & 73,55 & 32,09 & 116,37 \\
@@ -935,31 +935,31 @@ The CPU on mobile phones is a limited resources. The more an application consume
 \end{table}
 
 \paragraph{}
-Each column describes the average CPU consumption for one scenario : changing a text, scrolling a text, changing a picture and scrolling pictures. Each row describes the average result of each type of application (Native, Hybrid and PWA) and details the results for each physical device tested. As \% CPU core is a unit unique to each device, the average \%CPU core of all devices was not computed this time. 
+Each column describes the average CPU consumption for one scenario : changing a text, scrolling a text, changing a picture and scrolling pictures. Each row describes the average result of each type of application (Native, Interpreted and PWA) and details the results for each physical device tested. As \% CPU core is a unit unique to each device, the average \%CPU core of all devices was not computed this time. 
 
 \paragraph{}
-Again, the first observation is the difference of performance between the Native application and the Hybrid app and PWA. On one hand, the Native application consumes less than 10\% CPU when changing the content (maximum of 7.97\% when changing text and 9.09\% when changing pictures), and no more than 50\% CPU when scrolling (maximum of 40.13\% when scrolling text and 51.13\% when scrolling pictures). On the other hand, the Hybrid application consumes at least 31.44\% CPU when changing content and 59.42\% when scrolling. The Progressive Web App consumes between 11.56\% and 28.28\% CPU when changing content, and between 66.35\% and 119.17\% when scrolling.
+Again, the first observation is the difference of performance between the Native application and the Interpreted app and PWA. On one hand, the Native application consumes less than 10\% CPU when changing the content (maximum of 7.97\% when changing text and 9.09\% when changing pictures), and no more than 50\% CPU when scrolling (maximum of 40.13\% when scrolling text and 51.13\% when scrolling pictures). On the other hand, the Interpreted application consumes at least 31.44\% CPU when changing content and 59.42\% when scrolling. The Progressive Web App consumes between 11.56\% and 28.28\% CPU when changing content, and between 66.35\% and 119.17\% when scrolling.
 
 \paragraph{}
 As expected, all applications consumes more CPU when scrolling (Column 2 and 4) than when changing content (Column 1 and 3). We notice a difference of at least 14.53\% CPU core between scrolling and changing text on the same application and device, and at least 15.99\% CPU core between scrolling and changing pictures.
 
 \paragraph{}
-Surprisingly, displaying pictures (Column 3 and 4) does not always consume more CPU than displaying text (Column 1 and 2). The Progressive Web App consumes between 2.62\% and 3.46\% more CPU core when changing pictures (Column 3) than when changing text (Column 1). We also observe this phenomenon with the Hybrid app on Samsung S6 (1.77\% more CPU core when changing text than picture) and Samsung S5 (0.53\% more CPU) and with the Native application on Samsung S6 where scrolling text consumes 6.13\% more CPU than scrolling pictures.
+Surprisingly, displaying pictures (Column 3 and 4) does not always consume more CPU than displaying text (Column 1 and 2). The Progressive Web App consumes between 2.62\% and 3.46\% more CPU core when changing pictures (Column 3) than when changing text (Column 1). We also observe this phenomenon with the Interpreted app on Samsung S6 (1.77\% more CPU core when changing text than picture) and Samsung S5 (0.53\% more CPU) and with the Native application on Samsung S6 where scrolling text consumes 6.13\% more CPU than scrolling pictures.
 
-%However, displaying pictures does not always consume more CPU than displaying text. We can see pictures consuming less than text on the Hybrid application when changing content, though the difference is small, and especially on the Progressive Web App.
+%However, displaying pictures does not always consume more CPU than displaying text. We can see pictures consuming less than text on the Interpreted application when changing content, though the difference is small, and especially on the Progressive Web App.
 
 \paragraph{}
-The last observation concerns the comparison between the Hybrid and Progressive Web Application. One one hand, the PWA consumes noticeably less CPU than the Hybrid app when changing content. The difference between the Hybrid app and the PWA ranges from 9.09\% to 31.31\%CPU consumption on the same device when changing text, and from 12.77\% to 32.16\% CPU consumption when changing pictures. On the other hand, the PWA usually consumes more CPU than the Hybrid app when scrolling. Scrolling text requires between 7.44\% and 31.78\% more CPU with the PWA than with the Hybrid app. The difference when scrolling pictures is less important, as the PWA consumes 2.80\% more CPU on the Huawei and 6.08\% more CPU on the Samsung S5 than the Hybrid app, but 4.03\% less CPU on the Samsung S6.
+The last observation concerns the comparison between the Interpreted and Progressive Web Application. One one hand, the PWA consumes noticeably less CPU than the Interpreted app when changing content. The difference between the Interpreted app and the PWA ranges from 9.09\% to 31.31\%CPU consumption on the same device when changing text, and from 12.77\% to 32.16\% CPU consumption when changing pictures. On the other hand, the PWA usually consumes more CPU than the Interpreted app when scrolling. Scrolling text requires between 7.44\% and 31.78\% more CPU with the PWA than with the Interpreted app. The difference when scrolling pictures is less important, as the PWA consumes 2.80\% more CPU on the Huawei and 6.08\% more CPU on the Samsung S5 than the Interpreted app, but 4.03\% less CPU on the Samsung S6.
 
 %\paragraph{}
-%The last observation concerns the comparison between the Hybrid and Progressive Web Application. One one hand, the PWA consumes noticeably less CPU than the Hybrid app when changing content, often half as much. On the other hand, it consumes slightly more when scrolling content though the difference is usually than 10\%. 
+%The last observation concerns the comparison between the Interpreted and Progressive Web Application. One one hand, the PWA consumes noticeably less CPU than the Interpreted app when changing content, often half as much. On the other hand, it consumes slightly more when scrolling content though the difference is usually than 10\%. 
 
 \paragraph{}
-The conclusion to the CPU usage of Mobile and Progressive Web App is similar to the memory consumption. In every scenario, the Progressive Web App consumed more CPU than the native application though the difference is not as big as the memory consumption. However, it also consumed similar amount of CPU than the Hybrid application when scrolling, and less when changing content. Thus, Progressive Web Apps can be considered better than Hybrid applications in terms of CPU usage, but worse than Native applications.
+The conclusion to the CPU usage of Mobile and Progressive Web App is similar to the memory consumption. In every scenario, the Progressive Web App consumed more CPU than the native application though the difference is not as big as the memory consumption. However, it also consumed similar amount of CPU than the Interpreted application when scrolling, and less when changing content. Thus, Progressive Web Apps can be considered better than Interpreted applications in terms of CPU usage, but worse than Native applications.
 
 \paragraph{}
 This chapter presented the results of the experiments conducted to compare the smoothness, memory performance and CPU usage of Progressive Web Apps and Mobile applications. The next chapter will discuss those last results and the limitations of the conclusions.
-%To summarize the results presented in this chapter, it was found that the CPU usage measured by Chrome tools is not as accurate as Android tools and that Android emulators are not precise enough to use them in CPU experiments. A smoothness metric able to compare Mobile applications and Progressive Web app was defined and used to compare a Hybrid, a Native and a Progressive Web Application. The next chapter will discuss those results.
+%To summarize the results presented in this chapter, it was found that the CPU usage measured by Chrome tools is not as accurate as Android tools and that Android emulators are not precise enough to use them in CPU experiments. A smoothness metric able to compare Mobile applications and Progressive Web app was defined and used to compare a Interpreted, a Native and a Progressive Web Application. The next chapter will discuss those results.
 
 
 \chapter{Discussion}
@@ -980,13 +980,13 @@ Firstly, the scrolling experiments were not as consistent between frameworks and
 Lastly, the clocks of different threads in Chrome were sometimes found to be slightly out of sync. Thus, some events were detected before their triggering events on another thread. However, those incidents concerned events not counted in the frame duration. They were scarce and the delay was of small magnitude. Thus, it was concluded that they did not impact the results presented here.
 
 \section{Smoothness}
-The smoothness performance of native, hybrid and progressive web applications was evaluated in 4 different scenarios as they triggered different stages of Chrome's rendering pipeline: changing a text, scrolling a text, changing pictures and scrolling pictures. In almost every scenario, the smoothness of the Progressive Web App was found to be lagging behind those of native and hybrid applications, often by a 2-times magnitude.\newline
+The smoothness performance of native, interpreted and progressive web applications was evaluated in 4 different scenarios as they triggered different stages of Chrome's rendering pipeline: changing a text, scrolling a text, changing pictures and scrolling pictures. In almost every scenario, the smoothness of the Progressive Web App was found to be lagging behind those of native and interpreted applications, often by a 2-times magnitude.\newline
 Contrary to what was expected, the frame computation time of Progressive Web Apps when changing a picture was a lot smaller than when scrolling pictures. As this is not observed when the content is text, this might be due to a better usage of the GPU, though this is only a hypothesis. \newline
-The Native and Hybrid application have similar results. The Hybrid app is faster at computing frames when changing the content displayed than the Native application, and slower when scrolling the view. As the difference is only of 2 or 3 ms during a scroll, and can attain 10 ms when changing content, the Hybrid application can be considered to be smoother than the Native application.
+The Native and Interpreted application have similar results. The Interpreted app is faster at computing frames when changing the content displayed than the Native application, and slower when scrolling the view. As the difference is only of 2 or 3 ms during a scroll, and can attain 10 ms when changing content, the Interpreted application can be considered to be smoother than the Native application.
 
 
 \section{Memory and CPU}
-The resources measured during the experiments were the CPU and Memory usage. The Native application was found to consume a lot less resources than the Hybrid and Progressive Web Applications. This will more likely impact the battery consumption, and corresponds to the result found by Ciman and Gaggi \cite{ciman2017empirical} who compared the energy consumption of Native and Cross-platform applications. They concluded that cross-platform applications consume more energy than native applications, especially when updating the User Interface. However, it does not concur the results found by Tjarco \cite{PWAapplicability} who compared the energy consumption of a Progressive Web App and Native applications and found that PWA consume less energy. Nevertheless, the applications used for his experiments also accessed the network regularly, impacting the results. Moreover, though a high CPU and Memory usage does consume more energy, it is not an accurate indicator of energy consumption.
+The resources measured during the experiments were the CPU and Memory usage. The Native application was found to consume a lot less resources than the Interpreted and Progressive Web Applications. This will more likely impact the battery consumption, and corresponds to the result found by Ciman and Gaggi \cite{ciman2017empirical} who compared the energy consumption of Native and Cross-platform applications. They concluded that cross-platform applications consume more energy than native applications, especially when updating the User Interface. However, it does not concur the results found by Tjarco \cite{PWAapplicability} who compared the energy consumption of a Progressive Web App and Native applications and found that PWA consume less energy. Nevertheless, the applications used for his experiments also accessed the network regularly, impacting the results. Moreover, though a high CPU and Memory usage does consume more energy, it is not an accurate indicator of energy consumption.
 
 \section{Limitations}
 
@@ -1024,24 +1024,24 @@ As the smoothness of an application is defined as how fast it can render frames,
 As the use of \textit{dumpsys cpuinfo} for Progressive Web Apps could include some overhead, we evaluated another method able to measure the CPU usage of PWA: the CPU sampling method of Chrome DevTools. However, it was found that it was less accurate than \textit{dumpsys cpuinfo} despite the overhead.
 
 \paragraph{}
-Finally, we developed 3 applications: a Native, a Hybrid and a Progressive Web App and evaluated their smoothness, memory performance and CPU usage during 4 different scenarios: changing and scrolling text and pictures. \newline
+Finally, we developed 3 applications: a Native, a Interpreted and a Progressive Web App and evaluated their smoothness, memory performance and CPU usage during 4 different scenarios: changing and scrolling text and pictures. \newline
 All experiments were automated in order to remove the human interaction variable from the results and make them reproducible. This was done using \textit{monkeyrunner} for experiments with \textit{dumpsys} and Chrome Devtools Protocol experimental methods \textit{Input.synthesizeTapGesture} and \textit{Input.synthesizeScrollGesture} for experiments with trace recording. The experimental \textit{Tracing} domain also allowed the automation of Chrome Trace recordings.
 \paragraph{}
-The results showed that the Progressive Web App was not as smooth as Mobile Applications on Android. However, it had similar or better CPU usage and memory performance than the Hybrid application depending on the scenario, though it was less performant than the Native application. \newline
-Nonetheless, those results do not mean developers should forget about Progressive Web Apps. The impact of the difference of performance on the end-users remains to be studied. Moreover, this study focused on the performance of PWA compared to Mobile Applications. It did not examined the benefits or drawbacks of Progressive Web Apps against regular Web Apps.
+The results showed that the Progressive Web App was not as smooth as Mobile Applications on Android. However, it had similar or better CPU usage and memory performance than the Interpreted application depending on the scenario, though it was less performant than the Native application. \newline
+Nonetheless, those results do not mean developers should forget about Progressive Web Apps. The impact of the difference of performance on the end-users remains to be studied. Moreover, this study focused on the performance of PWA compared to Mobile Applications. It did not examine the benefits or drawbacks of Progressive Web Apps against regular Web Apps.
 
 
 \iffalse
-Then, we evaluated the smoothness of a Hybrid, a Native and a Progressive Web Application and found that the Progressive Web App was not as performant as the Mobile applications. 
+Then, we evaluated the smoothness of a Interpreted, a Native and a Progressive Web Application and found that the Progressive Web App was not as performant as the Mobile applications. 
 \paragraph{}
 First, a model of Chrome's rendering pipeline was built empirically. This model allowed us to define a smoothness metric able to compare the frame duration of Mobile Applications on Android and Progressive Web Apps on Chrome. Since, the event triggering a new frame on Chrome is difficult to identify, and new events can impact the frame until late on Chrome's rendering pipeline, this metric was defined as the computation time of the frame before it is handled by the display manager of Android. 
 \paragraph{}
-This metric allowed us to compare the frame computation time of Mobile Applications and Progressive Web Apps with different user interactions and different type of content displayed. In all scenarios, the Progressive Web Application was a lot slower to compute a new frame than the Native and Hybrid Applications. Thus, we can conclude that Progressive Web Apps are not as smooth as Mobile Applications on Android. 
+This metric allowed us to compare the frame computation time of Mobile Applications and Progressive Web Apps with different user interactions and different type of content displayed. In all scenarios, the Progressive Web Application was a lot slower to compute a new frame than the Native and Interpreted Applications. Thus, we can conclude that Progressive Web Apps are not as smooth as Mobile Applications on Android. 
 \paragraph{}
-The resources used, namely the CPU and the Memory were also measured to compare the efficiency of the applications when computing new frames. In all scenarios, the Native application was more efficient than the Hybrid and Progressive Web Application, both in terms of CPU and Memory. However, the efficiency of the Hybrid and the Progressive Web Application was similar. From this, we can infer that progressive Web Applications does not consume more resources than Hybrid applications, but Native Android Applications remain more efficient.
+The resources used, namely the CPU and the Memory were also measured to compare the efficiency of the applications when computing new frames. In all scenarios, the Native application was more efficient than the Interpreted and Progressive Web Application, both in terms of CPU and Memory. However, the efficiency of the Interpreted and the Progressive Web Application was similar. From this, we can infer that progressive Web Applications does not consume more resources than Interpreted applications, but Native Android Applications remain more efficient.
 
 \paragraph{}
-To summarize, we found that Progressive Web Applications are not as smooth as Mobile Applications on Android. Their resource consumption, though similar to Hybrid applications, is higher than Native Applications. With this, we can conclude the smoothness performance of Progressive Web Apps is not as smooth as Native and Hybrid Applications on Android. 
+To summarize, we found that Progressive Web Applications are not as smooth as Mobile Applications on Android. Their resource consumption, though similar to Interpreted applications, is higher than Native Applications. With this, we can conclude the smoothness performance of Progressive Web Apps is not as smooth as Native and Interpreted Applications on Android. 
 \fi
 
 \section{Future work}
